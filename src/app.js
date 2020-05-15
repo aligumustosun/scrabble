@@ -73,18 +73,25 @@ class App extends Component {
     }
 
     initializeRows = () => {
-        const size = 10;
+        const { sizeX, sizeY } = this.props;
         const rows = [];
-        for(let i=0; i<size; i++) {
+        for(let i=0; i<sizeX; i++) {
             const row = [];
-            for(let k=0; k<size; k++) {
+            for(let k=0; k<sizeY; k++) {
                 row.push(new square(0, i, k));
             }
             rows.push(row);
         }
-        const valuesToEnter = []
-        for(let i=0; i<Math.floor(size*size/11); i++) {
+        const ratios = [11,5,2];
+        const valuesToEnter = [1,2,3]
+        for(let i=0; i<Math.floor(sizeX*sizeY*ratios[0]/100); i++) {
             valuesToEnter.push(1);
+        }
+        for(let i=0; i<Math.floor(sizeX*sizeY*ratios[1]/100); i++) {
+            valuesToEnter.push(2);
+        }
+        for(let i=0; i<Math.floor(sizeX*sizeY*ratios[2]/100); i++) {
+            valuesToEnter.push(3);
         }
         let newRows = this.fillValues(rows, valuesToEnter)
         this.setState({ rows:newRows })
@@ -110,4 +117,4 @@ class App extends Component {
     }
 }
 
-ReactDOM.render(<App/>, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById('root'));
