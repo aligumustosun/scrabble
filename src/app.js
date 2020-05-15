@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
+import { Icon, Label, Menu, Table} from 'semantic-ui-react'
 
 class square {
     constructor(coefficient, x,y) {
@@ -10,19 +11,21 @@ class square {
         this.x = x;
         this.y = y;
     }
-    render(props){
+    render(props, nbspTrue){
+        let returnValue;
         switch(this.coefficient) {
             case 0:
-                return <div {...props}>{this.coefficient}</div>;
+                returnValue = <div {...props}>{this.coefficient}</div>;
             case 1:
-                return <div {...props}>{this.coefficient}</div>;
+                returnValue = <div {...props}>{this.coefficient}</div>;
             case 2:
-                return <div {...props}>{this.coefficient}</div>;
+                returnValue = <div {...props}>{this.coefficient}</div>;
             case 3:
-                return <div {...props}>{this.coefficient}</div>;
+                returnValue = <div {...props}>{this.coefficient}</div>;
             default:
-                return <div {...props}>{this.coefficient}</div>;                                                           
-        }    
+                returnValue = <div {...props}>{this.coefficient}</div>;                                                           
+        }
+        return <>{returnValue} {nbspTrue ? <br/>:null}</>    
     }
 }
  
@@ -37,27 +40,18 @@ class App extends Component {
 
     shuffle(array) {
         let counter = array.length;
-    
-        // While there are elements in the array
         while (counter > 0) {
-            // Pick a random index
             let index = Math.floor(Math.random() * counter);
-    
-            // Decrease counter by 1
             counter--;
-    
-            // And swap the last element with it
             let temp = array[counter];
             array[counter] = array[index];
             array[index] = temp;
         }
-    
         return array;
     }
 
     fillValues = (prevRows,values) => {
         const rows = prevRows;
-        
         const emptySquares = [];
         rows.forEach(row => row.forEach(square => {
             if(square.empty) {
@@ -69,11 +63,12 @@ class App extends Component {
             rows[square.x][square.y].empty = false;
         })
         return rows;
-
     }
 
-    initializeRows = () => {
-        const { sizeX, sizeY } = this.props;
+    initializeRows = () => {        
+        //const { sizeX, sizeY } = this.props;
+        const sizeX = 16;
+        const sizeY = 16;
         const rows = [];
         for(let i=0; i<sizeX; i++) {
             const row = [];
@@ -82,8 +77,10 @@ class App extends Component {
             }
             rows.push(row);
         }
+        console.log(rows);
+
         const ratios = [11,5,2];
-        const valuesToEnter = [1,2,3]
+        const valuesToEnter = []
         for(let i=0; i<Math.floor(sizeX*sizeY*ratios[0]/100); i++) {
             valuesToEnter.push(1);
         }
@@ -103,16 +100,53 @@ class App extends Component {
     }
 
     
+    generateProps = (square, i,rowLength) => {
+        let backgroundColor = 'white';
+        switch(square.coefficient) {
+            case 0:
+                backgroundColor='black';
+                break;
+            case 1:
+                backgroundColor="white";
+                break;
+            case 2:
+                backgroundColor="yellow";
+                break;
+            case 3:
+                backgroundColor="green";
+                break;
+        }
+        return {
+            style:{marginBottom:'4px', marginTop:'0px', 
+            marginRight:'10px', marginLeft:'5px',
+            float: 'left',
+            backgroundColor
+        }}
+    }
+
+    generateRow = (row) => {
+        return row.map((square,i) =>
+         <Table.Cell>
+            {square.render(this.generateProps(square,i,row.length),
+             (i == row.length-1))}
+         </Table.Cell>)       
+    }
+
     render() {
     const { rows } = this.state;
     
         return (
-            <div>
-                { rows ? rows.map((row) => row.map((square,i) => square.render(
-                    {style:{marginBottom:'4px', marginTop:'0px', marginRight:'10px', marginLeft:'5px',
-                float:  (i == row.length-1) ? 'initial': 'left' }}
-                 ))) : null }   
-            </div>
+            <>
+              <Table>
+                <Table.Body>
+                { rows ? rows.map((row) => 
+                    <Table.Row>
+                    {this.generateRow(row)}
+                    </Table.Row>
+                    ) : null}
+                </Table.Body>
+                </Table> 
+            </>
         )
     }
 }
