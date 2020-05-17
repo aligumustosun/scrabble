@@ -1,35 +1,31 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { Icon, Label, Menu, Table } from "semantic-ui-react";
+import PlayGame from "./PlayGame";
 
 class square {
-  constructor(coefficient, x, y) {
-    this.coefficient = coefficient;
-    this.usedBefore = false;
+  constructor(x, y) {
+    this.coefficient = 1;
     this.empty = true;
     this.letter = "_";
     this.x = x;
     this.y = y;
   }
-  render(props, nbspTrue) {
+  render(props) {
     let returnValue;
     switch (this.coefficient) {
       case 0:
-        returnValue = <div {...props}>{this.letter}</div>;
+        returnValue = <div {...props}>{this.letter.toUpperCase()}</div>;
       case 1:
-        returnValue = <div {...props}>{this.letter}</div>;
+        returnValue = <div {...props}>{this.letter.toUpperCase()}</div>;
       case 2:
-        returnValue = <div {...props}>{this.letter}</div>;
+        returnValue = <div {...props}>{this.letter.toUpperCase()}</div>;
       case 3:
-        returnValue = <div {...props}>{this.letter}</div>;
+        returnValue = <div {...props}>{this.letter.toUpperCase()}</div>;
       default:
-        returnValue = <div {...props}>{this.letter}</div>;
+        returnValue = <div {...props}>{this.letter.toUpperCase()}</div>;
     }
-    return (
-      <>
-        {returnValue} {nbspTrue ? <br /> : null}
-      </>
-    );
+    return <>{returnValue}</>;
   }
 }
 
@@ -38,6 +34,9 @@ class Board extends Component {
     super(props);
     this.state = {
       rows: null,
+      startPoint: { x: 0, y: 0 },
+      player: true,
+      host: true,
     };
   }
 
@@ -61,33 +60,32 @@ class Board extends Component {
         if (square.empty) {
           emptySquares.push(square);
         }
-      })
+      }),
     );
+
     this.shuffle(emptySquares)
       .slice(0, values.length)
       .forEach((square, index) => {
         rows[square.x][square.y].coefficient = values[index];
-        rows[square.x][square.y].empty = false;
       });
     return rows;
   };
 
   initializeRows = () => {
     const { sizeX, sizeY } = this.props;
-    const rows = [];
+    let rows = [];
     for (let i = 0; i < sizeX; i++) {
       const row = [];
       for (let k = 0; k < sizeY; k++) {
-        row.push(new square(0, i, k));
+        row.push(new square(i, k));
       }
       rows.push(row);
     }
-    console.log(rows);
-
+    rows = this.putFirstWord(rows, "ali");
     const { coefficientRatios } = this.props;
     const valuesToEnter = [];
     for (let i = 0; i < coefficientRatios[0]; i++) {
-      valuesToEnter.push(1);
+      valuesToEnter.push(0);
     }
     for (let i = 0; i < coefficientRatios[1]; i++) {
       valuesToEnter.push(2);
@@ -105,13 +103,15 @@ class Board extends Component {
   }
 
   generateProps = (square, i, rowLength) => {
+    const { startPoint } = this.state;
+    const { x, y } = startPoint;
     let backgroundColor = "white";
     switch (square.coefficient) {
       case 0:
-        backgroundColor = "white";
+        backgroundColor = "black";
         break;
       case 1:
-        backgroundColor = "black";
+        backgroundColor = "white";
         break;
       case 2:
         backgroundColor = "yellow";
@@ -119,6 +119,9 @@ class Board extends Component {
       case 3:
         backgroundColor = "green";
         break;
+    }
+    if (square.x == x && square.y == y) {
+      backgroundColor = "gray";
     }
     return {
       style: {
@@ -129,32 +132,97 @@ class Board extends Component {
         float: "left",
         backgroundColor,
       },
-      onClick: (e) => {
-        console.log(e);
-      },
     };
   };
 
-  putFirstWord = (word) => {
+  putFirstWord = (rows, word) => {
     const { sizeX, sizeY } = this.props;
     const vertical = Math.random() >= 0.5;
     if (vertical) {
-      const x = Math.floor(Math.random() * sizeX);
-      const y = Math.floor(Math.random() * (sizeY * word.length));
+      const x = Math.floor(Math.random() * (sizeX - 1));
+      const y = Math.floor(Math.random() * (sizeY - word.length - 1));
       const startPoint = { x, y };
+      for (let i = 0; i < word.length; i++) {
+        rows[startPoint.x][startPoint.y + i].letter = word.charAt(i);
+        rows[startPoint.x][startPoint.y + i].empty = false;
+      }
+    } else if (!vertical) {
+      const x = Math.floor(Math.random() * (sizeX - word.length - 1));
+      const y = Math.floor(Math.random() * (sizeY - 1));
+      const startPoint = { x, y };
+      for (let i = 0; i < word.length; i++) {
+        rows[startPoint.x + i][startPoint.y].letter = word.charAt(i);
+        rows[startPoint.x + i][startPoint.y].empty = false;
+      }
     }
-    for (let i = 0; i < word.length; i++) {
-      word.charAt(i);
-    }
+    return rows;
   };
 
-  generateRow = (row) => {
+  wordList = ["sa", "as", "aligt", "guys"];
+
+  checkWordAndGetPoint = (vertical, word) => {
+    const { startPoint, rows } = this.state;
+    if (!this.wordList.includes(word)) {
+      return 0;
+    }
+    const getSquares = async () => {
+      return Promise.all(
+        Array.from(word).map((char, i) => {
+          const square =
+            rows[startPoint.x + (!vertical ? 0 : i)][
+              startPoint.y + (vertical ? 0 : i)
+            ];
+          return square;
+        }),
+      );
+    };
+
+    getSquares().then(async (squares) => {
+      const blackSquares = squares.filter((square) => square.coefficient == 0);
+      const newLetterSquares = squares.filter((square) => square.letter == "_");
+      const filledSquares = squares.filter((square) => !square.empty);
+      const unmatchedSquares = squares.filter(
+        (square, i) => square.letter != "_" && square.letter != word[i],
+      );
+      const coefficientPoints = newLetterSquares.reduce(async (multipliedPoints, square) => 
+      {
+        const multipliedPointResult = await multipliedPoints;
+        console.log({ multipliedPointResult, newLetterSquares})
+        return multipliedPointResult * newLetterSquares.length;
+      }, 1);
+      if (
+        newLetterSquares.length < 1 ||
+        unmatchedSquares.length + blackSquares.length > 0 ||
+        filledSquares.length < 1
+      ) {
+        return 0;
+      } else {
+        squares.forEach((square, i) => {
+          const newSquare = square;
+          square.letter = word[i];
+          square.empty = false;
+          rows[square.x][square.y] = newSquare;
+        });
+        this.setState({ rows });
+
+        coefficientPoints.then(points => {
+          console.log(points)
+          return points; 
+        }) 
+      }
+    });
+  };
+
+  generateRow = (row, rowIndex) => {
     return row.map((square, i) => (
-      <Table.Cell>
-        {square.render(
-          this.generateProps(square, i, row.length),
-          i == row.length - 1
-        )}
+      <Table.Cell
+        key={rowIndex + i}
+        onClick={() => {
+          this.setState({ startPoint: { x: rowIndex, y: i } });
+          console.log({ startPoint: { x: rowIndex, y: i } });
+        }}
+      >
+        {square.render(this.generateProps(square, i, row.length))}
       </Table.Cell>
     ));
   };
@@ -167,12 +235,15 @@ class Board extends Component {
         <Table>
           <Table.Body>
             {rows
-              ? rows.map((row) => (
-                  <Table.Row>{this.generateRow(row)}</Table.Row>
+              ? rows.map((row, i) => (
+                  <Table.Row key={i}>{this.generateRow(row, i)}</Table.Row>
                 ))
               : null}
           </Table.Body>
         </Table>
+        {this.state.player ? (
+          <PlayGame checkWord={this.checkWordAndGetPoint} />
+        ) : null}
       </>
     );
   }

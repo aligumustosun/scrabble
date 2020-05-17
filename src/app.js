@@ -12,14 +12,18 @@ import {
   Form,
 } from "semantic-ui-react";
 import JoinGame from "./JoinGame.js";
+import PlayGame from "./PlayGame.js";
 import Board from "./Board";
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       showBoard: false,
+      player:true,
     };
   }
+
+
 
   OyunuKur = () => {
     this.setState({ showBoard: false }, () =>
@@ -35,7 +39,7 @@ class App extends Component {
         <div>
           <Grid columns={2}>
             <Grid.Row>
-              <GridColumn>
+              <Grid.Column>
                 {this.state.showBoard ? (
                   <Board
                     sizeX={parseInt(
@@ -51,14 +55,15 @@ class App extends Component {
                     ]}
                   ></Board>
                 ) : null}
-              </GridColumn>
-              <GridColumn>
+              </Grid.Column>
+              <Grid.Column>
                 {/*<JoinGame />*/}
                 <Form>
                   <Form.Group unstackable widths={2}>
                     <Form.Field>
                       <Form.Input
                         id="oyunAlaniXinput"
+                        defaultValue={11}
                         label={"Oyun Alanı X"}
                         placeholder="X"
                         width={14}
@@ -68,6 +73,7 @@ class App extends Component {
                       <Form.Input
                         id="oyunAlaniYinput"
                         label={"Oyun Alanı Y"}
+                        defaultValue={11}
                         placeholder="Y"
                         width={14}
                       />
@@ -77,6 +83,7 @@ class App extends Component {
                     <Form.Field>
                       <Form.Input
                         id="ratioZero"
+                        defaultValue={11}
                         label={"Kullanılamaz Bölge Sayısı"}
                         placeholder="Kullanılamaz Bölge"
                         width={15}
@@ -87,6 +94,7 @@ class App extends Component {
                         id="ratioTwo"
                         label={"x2 Bölge Sayısı"}
                         placeholder="x2 Bölge Sayısı"
+                        defaultValue={11}
                         width={14}
                       />
                     </Form.Field>
@@ -94,6 +102,7 @@ class App extends Component {
                       <Form.Input
                         id="ratioThree"
                         label={"x3 Bölge Sayısı"}
+                        defaultValue={11}
                         placeholder="x3 Bölge Sayısı"
                         width={14}
                       />
@@ -126,7 +135,7 @@ class App extends Component {
                     <Button onClick={() => this.OyunuKur()}>Oyunu Kur</Button>
                   </Form.Field>
                 </Form>
-              </GridColumn>
+              </Grid.Column>
             </Grid.Row>
           </Grid>
         </div>
