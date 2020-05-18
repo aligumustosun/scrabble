@@ -12,7 +12,7 @@ class PlayGame extends Component {
   checkWord = () => {
    const { wordToCheck, vertical } = this.state;
    const { checkWord } = this.props;
-   console.log(checkWord(vertical, wordToCheck));
+   checkWord(vertical, wordToCheck).then(response => console.log(response));
   }
 
   render() {

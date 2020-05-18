@@ -162,7 +162,8 @@ class Board extends Component {
     return rows;
   };
 
-  checkWordAndGetPoint = (vertical, word) => {
+  checkWordAndGetPoint = async(vertical, word) => {
+    return new Promise((resolve,rej) => { 
     const { startPoint, rows, wordList } = this.state;
     if (!wordList.includes(word)) {
       return 0;
@@ -208,10 +209,12 @@ class Board extends Component {
         });
         this.setState({ rows });
         coefficientPoints.then((points) => {
-          return points * newLetterSquares.length;
+          resolve(points * newLetterSquares.length);
         });
       }
     });
+
+  });
   };
 
   generateRow = (row, rowIndex) => {
