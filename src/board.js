@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { Icon, Label, Menu, Table } from "semantic-ui-react";
 import PlayGame from "./PlayGame";
+import axios from "axios";
 
 class square {
   constructor(x, y) {
@@ -71,7 +72,7 @@ class Board extends Component {
     return rows;
   };
 
-  initializeRows = () => {
+  initializeRows = (wordList) => {
     const { sizeX, sizeY } = this.props;
     let rows = [];
     for (let i = 0; i < sizeX; i++) {
@@ -81,7 +82,7 @@ class Board extends Component {
       }
       rows.push(row);
     }
-    rows = this.putFirstWord(rows, "ali");
+    rows = this.putFirstWord(rows, wordList);
     const { coefficientRatios } = this.props;
     const valuesToEnter = [];
     for (let i = 0; i < coefficientRatios[0]; i++) {
@@ -98,8 +99,10 @@ class Board extends Component {
   };
 
   componentDidMount() {
-    this.initializeRows();
-    console.log(this.props);
+    axios.get("http://localhost:3000/getWords").then(({ data: wordList }) => {
+      this.setState({ wordList });
+      this.initializeRows(wordList);
+    });
   }
 
   generateProps = (square, i, rowLength) => {
@@ -135,7 +138,8 @@ class Board extends Component {
     };
   };
 
-  putFirstWord = (rows, word) => {
+  putFirstWord = (rows, wordList) => {
+    const word = wordList[Math.floor(Math.random() * 3000)];
     const { sizeX, sizeY } = this.props;
     const vertical = Math.random() >= 0.5;
     if (vertical) {
@@ -158,11 +162,9 @@ class Board extends Component {
     return rows;
   };
 
-  wordList = ["sa", "as", "aligt", "guys"];
-
   checkWordAndGetPoint = (vertical, word) => {
-    const { startPoint, rows } = this.state;
-    if (!this.wordList.includes(word)) {
+    const { startPoint, rows, wordList } = this.state;
+    if (!wordList.includes(word)) {
       return 0;
     }
     const getSquares = async () => {
@@ -184,12 +186,13 @@ class Board extends Component {
       const unmatchedSquares = squares.filter(
         (square, i) => square.letter != "_" && square.letter != word[i],
       );
-      const coefficientPoints = newLetterSquares.reduce(async (multipliedPoints, square) => 
-      {
-        const multipliedPointResult = await multipliedPoints;
-        console.log({ multipliedPointResult, newLetterSquares})
-        return multipliedPointResult * newLetterSquares.length;
-      }, 1);
+      const coefficientPoints = newLetterSquares.reduce(
+        async (multipliedPoints, square) => {
+          const multipliedPointResult = await multipliedPoints;
+          return multipliedPointResult * square.coefficient;
+        },
+        1,
+      );
       if (
         newLetterSquares.length < 1 ||
         unmatchedSquares.length + blackSquares.length > 0 ||
@@ -204,11 +207,9 @@ class Board extends Component {
           rows[square.x][square.y] = newSquare;
         });
         this.setState({ rows });
-
-        coefficientPoints.then(points => {
-          console.log(points)
-          return points; 
-        }) 
+        coefficientPoints.then((points) => {
+          return points * newLetterSquares.length;
+        });
       }
     });
   };
