@@ -13,6 +13,7 @@ app.get("/getWords", async(req, res) => {
   const fileAddr = path.join(__dirname, 'dictionary.txt');  
   fs.readFile(fileAddr, 'utf8', (err,data) => {
     const wordList = data.split('\n');
+    console.log(wordList)
     res.send(wordList)
   })
 });
