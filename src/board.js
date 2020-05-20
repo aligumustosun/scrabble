@@ -38,6 +38,7 @@ class Board extends Component {
       startPoint: { x: 0, y: 0 },
       player: true,
       host: true,
+      ip : '25.67.169.153'
     };
   }
 
@@ -99,7 +100,9 @@ class Board extends Component {
   };
 
   componentDidMount() {
-    axios.get("http://localhost:3000/getWords").then(({ data: wordList }) => {
+    const { ip } = this.props;  
+
+    axios.get(`http://${ip}:3000/getWords`).then(({ data: wordList }) => {
       this.setState({ wordList });
       this.initializeRows(wordList);
     });

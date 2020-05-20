@@ -30,9 +30,11 @@ class App extends Component {
       this.setState({ showBoard: true })
     );
   };
-  componentDidMount() {}
+  componentDidMount() {
+    
+  }
   render() {
-    const { rows } = this.state;
+    const { rows,ip } = this.state;
 
     return (
       <>
@@ -42,6 +44,7 @@ class App extends Component {
               <Grid.Column>
                 {this.state.showBoard ? (
                   <Board
+                    ip={ip}
                     sizeX={parseInt(
                       document.getElementById("oyunAlaniXinput").value
                     )}
