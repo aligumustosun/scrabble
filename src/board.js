@@ -3,6 +3,19 @@ import ReactDOM from "react-dom";
 import { Icon, Label, Menu, Table } from "semantic-ui-react";
 import PlayGame from "./PlayGame";
 import axios from "axios";
+import io from "socket.io-client";
+
+const socket = io("http://25.67.169.153:3000");
+
+socket.on("event", message => {
+  console.log(message);
+})
+
+socket.on("newRows", (rows) => {
+  if (this.state.player) {
+    this.setState({ rows });
+  }
+});
 
 class square {
   constructor(x, y) {
@@ -38,7 +51,8 @@ class Board extends Component {
       startPoint: { x: 0, y: 0 },
       player: true,
       host: true,
-      ip : '25.67.169.153'
+      ip: "25.67.169.153",
+      turn : false,
     };
   }
 
@@ -62,7 +76,7 @@ class Board extends Component {
         if (square.empty) {
           emptySquares.push(square);
         }
-      })
+      }),
     );
 
     this.shuffle(emptySquares)
@@ -100,7 +114,7 @@ class Board extends Component {
   };
 
   componentDidMount() {
-    const { ip } = this.props;  
+    const { ip } = this.state;
 
     axios.get(`http://${ip}:3000/getWords`).then(({ data: wordList }) => {
       this.setState({ wordList });
@@ -150,7 +164,7 @@ class Board extends Component {
     return new Promise((resolve, rej) => {
       const { startPoint, rows, wordList } = this.state;
       if (!wordList.includes(word)) {
-        return 0;
+        resolve(0, rows);
       }
       const getSquares = async () => {
         return Promise.all(
@@ -160,34 +174,34 @@ class Board extends Component {
                 startPoint.y + (vertical ? 0 : i)
               ];
             return square;
-          })
+          }),
         );
       };
 
       getSquares().then(async (squares) => {
         const blackSquares = squares.filter(
-          (square) => square.coefficient == 0
+          (square) => square.coefficient == 0,
         );
         const newLetterSquares = squares.filter(
-          (square) => square.letter == "_"
+          (square) => square.letter == "_",
         );
         const filledSquares = squares.filter((square) => !square.empty);
         const unmatchedSquares = squares.filter(
-          (square, i) => square.letter != "_" && square.letter != word[i]
+          (square, i) => square.letter != "_" && square.letter != word[i],
         );
         const coefficientPoints = newLetterSquares.reduce(
           async (multipliedPoints, square) => {
             const multipliedPointResult = await multipliedPoints;
             return multipliedPointResult * square.coefficient;
           },
-          1
+          1,
         );
         if (
           newLetterSquares.length < 1 ||
           unmatchedSquares.length + blackSquares.length > 0 ||
           filledSquares.length < 1
         ) {
-          return 0;
+          resolve(0, rows);
         } else {
           squares.forEach((square, i) => {
             const newSquare = square;
@@ -197,7 +211,7 @@ class Board extends Component {
           });
           this.setState({ rows });
           coefficientPoints.then((points) => {
-            resolve(points * newLetterSquares.length);
+            resolve({point : points * newLetterSquares.length, rows});
           });
         }
       });
@@ -223,10 +237,10 @@ class Board extends Component {
         onClick={() => {
           const { startPoint } = this.state;
           document.getElementById(
-            "x" + startPoint.x + "y" + startPoint.y
+            "x" + startPoint.x + "y" + startPoint.y,
           ).style.outlineStyle = "initial";
           document.getElementById(
-            "x" + square.x + "y" + square.y
+            "x" + square.x + "y" + square.y,
           ).style.outlineStyle = "inset";
           this.setState({ startPoint: { x: rowIndex, y: i } });
           console.log({ startPoint: { x: rowIndex, y: i } });
@@ -243,7 +257,7 @@ class Board extends Component {
 
     return (
       <>
-        <Table celled >
+        <Table celled>
           <Table.Body>
             {rows
               ? rows.map((row, i) => (

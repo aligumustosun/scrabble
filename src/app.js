@@ -138,6 +138,7 @@ class App extends Component {
                     <Button onClick={() => this.OyunuKur()}>Oyunu Kur</Button>
                   </Form.Field>
                 </Form>
+                <JoinGame/>
               </Grid.Column>
             </Grid.Row>
           </Grid>

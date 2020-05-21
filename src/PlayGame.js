@@ -1,27 +1,44 @@
 import React, { Component } from "react";
 import { Form, Button, Input, Dropdown, Label } from "semantic-ui-react";
+import io from "socket.io-client";
 
 class PlayGame extends Component {
-  state = {
-    vertical: true,
-    wordToCheck: "a",
-    totalPoints: 0,
-  };
+  constructor(props) {
+    super(props);
+
+    const socket = io("http://25.67.169.153:3000");
+
+    this.state = {
+      vertical: true,
+      wordToCheck: "a",
+      totalPoints: 0,
+      turn: false,
+      name: "SAMF",
+    };
+    socket.on("yourTurn", (name) => {
+      console.log(name);
+      if (this.state.name == name) {
+        this.setState({ turn: true });
+      }
+    });
+  }
 
   checkWord = () => {
     const { wordToCheck, vertical } = this.state;
     let points = this.state.totalPoints;
     const { checkWord } = this.props;
-    checkWord(vertical, wordToCheck).then((response) => {
-      points += response;
+    checkWord(vertical, wordToCheck).then(({ point, rows }) => {
+      points += point;
+      socket.emit("changeRows", rows);
       this.setState({ totalPoints: points });
     });
+    this.setState({ turn: false });
   };
 
   render() {
     return (
       <div>
-        <Form style={{marginLeft:'2vh'}}>
+        <Form style={{ marginLeft: "2vh" }}>
           <Form.Group widths={2}>
             <Form.Field>
               <Dropdown
@@ -64,7 +81,11 @@ class PlayGame extends Component {
             </Form.Field>
           </Form.Group>
           <Form.Group unstackable widths={1}>
-            <Button onClick={() => this.checkWord()}> Check word.</Button>
+            {this.state.turn ? (
+              <Button onClick={() => this.checkWord()}> Check word.</Button>
+            ) : (
+              <p>It's not your turn yet.</p>
+            )}
           </Form.Group>
         </Form>
       </div>

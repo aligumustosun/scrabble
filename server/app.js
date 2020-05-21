@@ -1,14 +1,62 @@
-const express = require("express");
-const app = express();
-const port = 3000;
 const path = require("path");
 const fs = require("fs");
-const cors = require("cors");
-const net = require("net");
-const publicIp = require("public-ip");
+const express = require("express");
+const http =require("http");
 
-  app.use(cors());
-  app.options("*", cors());
+const app = express();
+const server = http.createServer(app);
+server.listen(3000);
+const socket = require("socket.io")(server, {
+    handlePreflightRequest: (req, res) => {
+        const headers = {
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+            "Access-Control-Allow-Origin": req.headers.origin, //or the specific origin you want to give access to,
+            "Access-Control-Allow-Credentials": true
+        };
+        res.writeHead(200, headers);
+        res.end();
+    }
+});
+
+const myClientList = [];
+let clientCounter = 0;
+
+
+socket.on("connection", (socket) => {
+
+  const changeTurn  = () => {
+    socket.broadcast.emit("yourTurn", myClientList[clientCounter%(myClientList.length)]);
+    clientCounter++;
+  };
+  socket.on("disconnect", (socket) => {
+    delete myClientList[socket.id];
+  });
+  
+  socket.on("newClient", name => {
+    myClientList.push(name);
+  })
+
+  
+  socket.on("startGame", () => {
+    console.log({myClientList, clientCounter})
+    changeTurn()
+  })
+  
+  socket.on("changeRows", rows => {
+    socket.emit("newRows", rows);
+    changeTurn()
+  })
+  
+  socket.on("comeon", message => {
+    console.log(message)
+  })
+
+})
+socket.on('connect', function(){
+  console.log("connected")
+});
+
+    
 
   app.get("/getWords", async (req, res) => {
     const fileAddr = path.join(__dirname, "dictionary.txt");
@@ -19,31 +67,22 @@ const publicIp = require("public-ip");
     });
   });
 
-  app.listen(port, () =>
-    console.log(`Example app listening at http://0.0.0.0:${port}`),
-  );
 
-  var server = net.createServer(function (socket) {
-    socket.write("Echo server\r\n");
-    socket.pipe(socket);
-    socket.on("data", (data) => {
-      console.log(data.toString());
+app.post("/getRows", async(req,res) => {
+  const fileAddr = path.join(__dirname, "rows.txt");
+    fs.readFile(fileAddr, "utf8", (err, data) => {
+      const rowsJson = JSON.parse(data);
+      res.send(rowsJson);
     });
-    socket.on("error", (err) =>
-      console.log("Caught flash policy server socket error: " + err),
-    );
-  });
-
-  server.listen(1337, '0.0.0.0');
+})
 
   
 
-app.get("/getExternalIp", async (req, res) => {
-    const fileAddr = path.join(__dirname, "dictionary.txt");
-    fs.readFile(fileAddr, "utf8", (err, data) => {
-      publicIp.v4().then((ip) => {
-        res.send(ip);
-      });
+app.post("/writeRows", async(req,res) => {
+  const { rows } = req.body;
+  const fileAddr = path.join(__dirname, "rows.txt");
+    fs.writeFile(fileAddr, JSON.stringify(rows), (err, data) => {
+      res.send("writed");
     });
-});
+})  
 
