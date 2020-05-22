@@ -22,9 +22,6 @@ class JoinGame extends Component {
           <Button type="submit" onClick={this.oyunaKatıl}>
             Oyuna Katıl
           </Button>
-          <Button onClick={() => socket.emit('startGame')}>
-            Start Game
-          </Button>
         </Form>
       </div>
     );

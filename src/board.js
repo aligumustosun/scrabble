@@ -96,7 +96,10 @@ class Board extends Component {
       valuesToEnter.push(3);
     }
     let newRows = this.fillValues(rows, valuesToEnter);
-    socket.emit("startGame", newRows)
+    if (this.props.name === this.state.myClientList[this.state.clientCounter]){
+      this.setState({rows: newRows})
+    }
+    this.props.socket.emit("changeRows", newRows)
   };
 
   componentDidMount() {
@@ -200,7 +203,10 @@ class Board extends Component {
             square.empty = false;
             rows[square.x][square.y] = newSquare;
           });
-          this.setState({ rows });
+          if (this.props.name === this.state.myClientList[this.state.clientCounter]){
+            this.setState({rows})
+          }
+          this.props.socket.emit('changeRows',rows);
           coefficientPoints.then((points) => {
             resolve({ point: points * newLetterSquares.length, rows });
           });

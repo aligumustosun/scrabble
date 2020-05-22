@@ -31,19 +31,9 @@ socket.on("connection", (socket) => {
     console.log(name);
     myClientList.push(name);
   });
-
-  socket.on("startGame", () => {
-    socket.emit("newRows", {
-      rows,
-      clientCounter: clientCounter % myClientList.length,
-      myClientList,
-    });
-    clientCounter++;
-  });
-
   socket.on("changeRows", (rows) => {
     console.log("change th efucking rows");
-    socket.emit("newRows", {
+    socket.broadcast.emit("newRows", {
       rows,
       clientCounter: clientCounter % myClientList.length,
       myClientList,
