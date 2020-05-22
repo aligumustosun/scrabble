@@ -110,10 +110,12 @@ class Board extends Component {
         this.initializeRows(wordList);
       });
     }
+    if(!this.state.turn) {
     socket.on("newRows", ({ rows, clientCounter, myClientList }) => {
       console.log({ rows });
       this.setState({ rows, clientCounter, myClientList });
     });
+  }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -221,7 +223,7 @@ class Board extends Component {
             square.empty = false;
             rows[square.x][square.y] = newSquare;
           });
-          if (this.props.name === this.state.myClientList[this.state.clientCounter]){
+          if (this.state.turn){
             this.setState({rows})
           }
           this.props.socket.emit('changeRows',rows);
@@ -268,7 +270,7 @@ class Board extends Component {
   };
 
   render() {
-    const { rows } = this.state;
+    const { rows,gameStarted } = this.state;
 
     return (
       <>
@@ -281,10 +283,11 @@ class Board extends Component {
               : null}
           </Table.Body>
         </Table>
-        {this.props.host ? (
+        {this.props.host && !gameStarted ? (
           <Button
             onClick={() => {
               console.log(this.props.socket);
+              this.setState({ gameStarted: true})
               this.props.socket.emit("changeRows", this.state.rows);
             }}
           >

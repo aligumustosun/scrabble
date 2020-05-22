@@ -16,7 +16,7 @@ import io from "socket.io-client";
 import Board from "./Board";
 
 let socket;
-const staticHostIp = "25.68.159.146",
+const staticHostIp = "25.67.169.153",
   staticHostPort = "3000";
 
 class App extends Component {
