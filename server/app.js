@@ -33,7 +33,8 @@ socket.on("connection", (socket) => {
     delete myClientList[socket.id];
   });
   
-  socket.on("newClient", name => {
+  socket.on("newPlayer", name => {
+    console.log(name)
     myClientList.push(name);
   })
 
