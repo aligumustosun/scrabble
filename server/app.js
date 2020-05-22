@@ -23,9 +23,6 @@ const myClientList = [];
 let clientCounter = 0;
 
 socket.on("connection", (socket) => {
-  const changeTurn = () => {
-    socket.emit("yourTurn", myClientList[clientCounter % myClientList.length]);
-  };
   socket.on("disconnect", (socket) => {
     delete myClientList[socket.id];
   });
@@ -36,7 +33,12 @@ socket.on("connection", (socket) => {
   });
 
   socket.on("startGame", () => {
-    changeTurn();
+    socket.emit("newRows", {
+      rows,
+      clientCounter: clientCounter % myClientList.length,
+      myClientList,
+    });
+    clientCounter++;
   });
 
   socket.on("changeRows", (rows) => {
@@ -47,7 +49,6 @@ socket.on("connection", (socket) => {
       myClientList,
     });
     clientCounter++;
-    changeTurn();
   });
 
   socket.on("comeon", (message) => {

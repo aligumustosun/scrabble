@@ -96,7 +96,7 @@ class Board extends Component {
       valuesToEnter.push(3);
     }
     let newRows = this.fillValues(rows, valuesToEnter);
-    this.setState({ rows: newRows });
+    socket.emit("startGame", newRows)
   };
 
   componentDidMount() {
@@ -110,9 +110,6 @@ class Board extends Component {
     socket.on("newRows", ({ rows, clientCounter, myClientList }) => {
       console.log({ rows });
       this.setState({ rows, clientCounter, myClientList });
-    });
-    socket.on("yourTurn", (name) => {
-      this.setState({ turn: name == this.state.name });
     });
   }
 
