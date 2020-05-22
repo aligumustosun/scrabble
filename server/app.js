@@ -32,8 +32,7 @@ socket.on("connection", (socket) => {
     myClientList.push(name);
   });
   socket.on("changeRows", (rows) => {
-    console.log("change th efucking rows");
-    socket.emit("newRows", {
+    socket.broadcast.emit("newRows", {
       rows,
       clientCounter: clientCounter % myClientList.length,
       myClientList,
@@ -53,17 +52,22 @@ app.get("/getWords", async (req, res) => {
   const fileAddr = path.join(__dirname, "dictionary.txt");
   fs.readFile(fileAddr, "utf8", (err, data) => {
     const wordList = data.split("\n");
+    hostWordList = wordList;
     res.send(wordList);
   });
 });
 
-app.post("/getRows", async (req, res) => {
-  const fileAddr = path.join(__dirname, "rows.txt");
+
+app.get("/checkWord", async(req,res) => {
+  const { word } = req.query;
+  const fileAddr = path.join(__dirname, "dictionary.txt");
   fs.readFile(fileAddr, "utf8", (err, data) => {
-    const rowsJson = JSON.parse(data);
-    res.send(rowsJson);
+    const wordList = data.split("\n");
+    res.send(wordList.includes(word));
   });
-});
+})
+
+
 
 app.post("/writeRows", async (req, res) => {
   const { rows } = req.body;

@@ -37,7 +37,7 @@ class Board extends Component {
       rows: null,
       startPoint: { x: 0, y: 0 },
       player: true,
-      turn: false,
+      turn: props.host ? true : false,
       gameStarted: false,
     };
   }
@@ -62,7 +62,7 @@ class Board extends Component {
         if (square.empty) {
           emptySquares.push(square);
         }
-      })
+      }),
     );
 
     this.shuffle(emptySquares)
@@ -96,26 +96,28 @@ class Board extends Component {
       valuesToEnter.push(3);
     }
     let newRows = this.fillValues(rows, valuesToEnter);
-    if (this.state.turn){
-      this.setState({rows: newRows})
+    if (this.state.turn) {
+      this.setState({ rows: newRows });
     }
-    this.props.socket.emit("changeRows", newRows)
+    this.props.socket.emit("changeRows", newRows);
   };
 
   componentDidMount() {
     const { ip, port, socket } = this.props;
-    if (this.props.host) {
-      axios.get(`http://${ip}:${port}/getWords`).then(({ data: wordList }) => {
-        this.setState({ wordList });
+    console.log(this.state.turn);
+    axios.get(`http://${ip}:${port}/getWords`).then(({ data: wordList }) => {
+      this.setState({ wordList });
+
+      if (this.props.host) {
         this.initializeRows(wordList);
-      });
-    }
-    if(!this.state.turn) {
+      }
+    });
     socket.on("newRows", ({ rows, clientCounter, myClientList }) => {
       console.log({ rows });
-      this.setState({ rows, clientCounter, myClientList });
+      if (!this.state.turn) {
+        this.setState({ rows, clientCounter, myClientList });
+      }
     });
-  }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -134,7 +136,6 @@ class Board extends Component {
       }
     }
   }
-
 
   generateProps = (square, i, rowLength) => {
     const { startPoint } = this.state;
@@ -174,10 +175,10 @@ class Board extends Component {
     return rows;
   };
 
-  checkWordAndGetPoint = async (vertical, word) => {
+  checkWordAndGetPoint = async (vertical, word, included) => {
     return new Promise((resolve, rej) => {
       const { startPoint, rows, wordList } = this.state;
-      if (!wordList.includes(word)) {
+      if (!included) {
         resolve(0, rows);
       }
       const getSquares = async () => {
@@ -188,27 +189,27 @@ class Board extends Component {
                 startPoint.y + (vertical ? 0 : i)
               ];
             return square;
-          })
+          }),
         );
       };
 
       getSquares().then(async (squares) => {
         const blackSquares = squares.filter(
-          (square) => square.coefficient == 0
+          (square) => square.coefficient == 0,
         );
         const newLetterSquares = squares.filter(
-          (square) => square.letter == "_"
+          (square) => square.letter == "_",
         );
         const filledSquares = squares.filter((square) => !square.empty);
         const unmatchedSquares = squares.filter(
-          (square, i) => square.letter != "_" && square.letter != word[i]
+          (square, i) => square.letter != "_" && square.letter != word[i],
         );
         const coefficientPoints = newLetterSquares.reduce(
           async (multipliedPoints, square) => {
             const multipliedPointResult = await multipliedPoints;
             return multipliedPointResult * square.coefficient;
           },
-          1
+          1,
         );
         if (
           newLetterSquares.length < 1 ||
@@ -223,10 +224,10 @@ class Board extends Component {
             square.empty = false;
             rows[square.x][square.y] = newSquare;
           });
-          if (this.state.turn){
-            this.setState({rows})
+          if (this.state.turn) {
+            this.setState({ rows });
           }
-          this.props.socket.emit('changeRows',rows);
+          this.props.socket.emit("changeRows", rows);
           coefficientPoints.then((points) => {
             resolve({ point: points * newLetterSquares.length, rows });
           });
@@ -254,10 +255,10 @@ class Board extends Component {
         onClick={() => {
           const { startPoint } = this.state;
           document.getElementById(
-            "x" + startPoint.x + "y" + startPoint.y
+            "x" + startPoint.x + "y" + startPoint.y,
           ).style.outlineStyle = "initial";
           document.getElementById(
-            "x" + square.x + "y" + square.y
+            "x" + square.x + "y" + square.y,
           ).style.outlineStyle = "inset";
           this.setState({ startPoint: { x: rowIndex, y: i } });
           console.log({ startPoint: { x: rowIndex, y: i } });
@@ -270,7 +271,7 @@ class Board extends Component {
   };
 
   render() {
-    const { rows,gameStarted } = this.state;
+    const { rows, gameStarted } = this.state;
 
     return (
       <>
@@ -287,7 +288,7 @@ class Board extends Component {
           <Button
             onClick={() => {
               console.log(this.props.socket);
-              this.setState({ gameStarted: true})
+              this.setState({ gameStarted: true });
               this.props.socket.emit("changeRows", this.state.rows);
             }}
           >

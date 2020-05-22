@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Form, Button, Input, Dropdown, Label } from "semantic-ui-react";
-import io from "socket.io-client";
+import aixos from "axios";
 
 let socket;
 class PlayGame extends Component {
@@ -36,12 +36,16 @@ class PlayGame extends Component {
     const { wordToCheck, vertical } = this.state;
     let points = this.state.totalPoints;
     const { checkWord } = this.props;
-    checkWord(vertical, wordToCheck).then(({ point, rows }) => {
-      points += point;
-      socket.emit("changeRows", rows);
-      this.setState({ totalPoints: points });
-    });
-    this.setState({ turn: false });
+    axios
+      .get("http://25.67.169.153:3000/checkWord?word=" + wordToCheck)
+      .then(({ data: included }) => {
+        checkWord(vertical, wordToCheck, included).then(({ point, rows }) => {
+          points += point;
+          socket.emit("changeRows", rows);
+          this.setState({ totalPoints: points });
+        });
+        this.setState({ turn: false });
+      });
   };
 
   render() {

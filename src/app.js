@@ -180,6 +180,8 @@ class App extends Component {
             ) : (
               <>
                 <Board
+                  ip={staticHostIp}
+                  port={staticHostPort}
                   host={host}
                   socket={socket}
                   name={this.state.name}
