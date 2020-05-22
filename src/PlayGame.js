@@ -2,22 +2,21 @@ import React, { Component } from "react";
 import { Form, Button, Input, Dropdown, Label } from "semantic-ui-react";
 import io from "socket.io-client";
 
+let socket;
 class PlayGame extends Component {
   constructor(props) {
     super(props);
 
-    const socket = io("http://25.67.169.153:3000");
-
+    socket = props.socket;
     this.state = {
       vertical: true,
       wordToCheck: "a",
       totalPoints: 0,
       turn: false,
-      name: "SAMF",
     };
     socket.on("yourTurn", (name) => {
-      console.log(name);
-      if (this.state.name == name) {
+      console.log({ name, props });
+      if (props.name == name) {
         this.setState({ turn: true });
       }
     });

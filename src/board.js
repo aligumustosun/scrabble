@@ -4,24 +4,22 @@ import { Icon, Label, Menu, Table, Button } from "semantic-ui-react";
 import PlayGame from "./PlayGame";
 import axios from "axios";
 
-
-const renderSquare = (square,props) => {
-    let returnValue;
-    switch (square.coefficient) {
-      case 0:
-        returnValue = <div {...props}>{square.letter.toUpperCase()}</div>;
-      case 1:
-        returnValue = <div {...props}>{square.letter.toUpperCase()}</div>;
-      case 2:
-        returnValue = <div {...props}>{square.letter.toUpperCase()}</div>;
-      case 3:
-        returnValue = <div {...props}>{square.letter.toUpperCase()}</div>;
-      default:
-        returnValue = <div {...props}>{square.letter.toUpperCase()}</div>;
-    }
-    return <>{returnValue}</>;
-
-} 
+const renderSquare = (square, props) => {
+  let returnValue;
+  switch (square.coefficient) {
+    case 0:
+      returnValue = <div {...props}>{square.letter.toUpperCase()}</div>;
+    case 1:
+      returnValue = <div {...props}>{square.letter.toUpperCase()}</div>;
+    case 2:
+      returnValue = <div {...props}>{square.letter.toUpperCase()}</div>;
+    case 3:
+      returnValue = <div {...props}>{square.letter.toUpperCase()}</div>;
+    default:
+      returnValue = <div {...props}>{square.letter.toUpperCase()}</div>;
+  }
+  return <>{returnValue}</>;
+};
 class square {
   constructor(x, y) {
     this.coefficient = 1;
@@ -30,7 +28,6 @@ class square {
     this.x = x;
     this.y = y;
   }
-  
 }
 
 class Board extends Component {
@@ -65,7 +62,7 @@ class Board extends Component {
         if (square.empty) {
           emptySquares.push(square);
         }
-      }),
+      })
     );
 
     this.shuffle(emptySquares)
@@ -111,7 +108,11 @@ class Board extends Component {
       });
     }
     socket.on("newRows", (rows) => {
+      console.log({ rows });
       this.setState({ rows });
+    });
+    socket.on("yourTurn", (name) => {
+      this.setState({ turn: name == this.state.name });
     });
   }
 
@@ -167,27 +168,27 @@ class Board extends Component {
                 startPoint.y + (vertical ? 0 : i)
               ];
             return square;
-          }),
+          })
         );
       };
 
       getSquares().then(async (squares) => {
         const blackSquares = squares.filter(
-          (square) => square.coefficient == 0,
+          (square) => square.coefficient == 0
         );
         const newLetterSquares = squares.filter(
-          (square) => square.letter == "_",
+          (square) => square.letter == "_"
         );
         const filledSquares = squares.filter((square) => !square.empty);
         const unmatchedSquares = squares.filter(
-          (square, i) => square.letter != "_" && square.letter != word[i],
+          (square, i) => square.letter != "_" && square.letter != word[i]
         );
         const coefficientPoints = newLetterSquares.reduce(
           async (multipliedPoints, square) => {
             const multipliedPointResult = await multipliedPoints;
             return multipliedPointResult * square.coefficient;
           },
-          1,
+          1
         );
         if (
           newLetterSquares.length < 1 ||
@@ -230,10 +231,10 @@ class Board extends Component {
         onClick={() => {
           const { startPoint } = this.state;
           document.getElementById(
-            "x" + startPoint.x + "y" + startPoint.y,
+            "x" + startPoint.x + "y" + startPoint.y
           ).style.outlineStyle = "initial";
           document.getElementById(
-            "x" + square.x + "y" + square.y,
+            "x" + square.x + "y" + square.y
           ).style.outlineStyle = "inset";
           this.setState({ startPoint: { x: rowIndex, y: i } });
           console.log({ startPoint: { x: rowIndex, y: i } });
@@ -259,14 +260,21 @@ class Board extends Component {
               : null}
           </Table.Body>
         </Table>
-        {this.props.host ?  
-          <Button onClick ={() => {
-            console.log(this.props.socket)
-            this.props.socket.emit("changeRows", this.state.rows)
-          }} >Oyunu başlat</Button>  
-         : null }        
-        <PlayGame checkWord={this.checkWordAndGetPoint} />
-
+        {this.props.host ? (
+          <Button
+            onClick={() => {
+              console.log(this.props.socket);
+              this.props.socket.emit("changeRows", this.state.rows);
+            }}
+          >
+            Oyunu başlat
+          </Button>
+        ) : null}
+        <PlayGame
+          socket={this.props.socket}
+          name={this.props.name}
+          checkWord={this.checkWordAndGetPoint}
+        />
       </>
     );
   }
