@@ -16,8 +16,8 @@ class PlayGame extends Component {
     };
   }
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.turn !== this.state.turn) {
-      this.setState({ turn })
+    if (prevProps.turn !== this.props.turn) {
+      this.setState({ turn: this.props.turn })
     }
   }
 
