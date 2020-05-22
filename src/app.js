@@ -12,11 +12,12 @@ import {
   Form,
   Dropdown,
 } from "semantic-ui-react";
-import io from 'socket.io-client'
+import io from "socket.io-client";
 import Board from "./Board";
 
 let socket;
-const staticHostIp='25.67.169.153',staticHostPort='3000'
+const staticHostIp = "25.67.169.153",
+  staticHostPort = "3000";
 
 class App extends Component {
   constructor(props) {
@@ -39,9 +40,9 @@ class App extends Component {
   JoinGame = () => {
     const port = document.getElementById("portInput").value;
     const ip = document.getElementById("ipInput").value;
+    this.setState({ playerEntered: true });
     socket = io(`http://${ip}:${port}`);
-    socket.emit("newPlayer", this.state.name)
-
+    socket.emit("newPlayer", this.state.name);
   };
 
   componentDidMount() {}
@@ -57,25 +58,30 @@ class App extends Component {
                 <Grid.Row>
                   <Grid.Column>
                     {this.state.showBoard ? (
-                      <><Board
-                        host={host}
-                        ip={staticHostIp}
-                        port={staticHostPort}
-                        socket={socket}
-                        name={this.state.name}
-                        sizeX={parseInt(
-                          document.getElementById("oyunAlaniXinput").value,
-                        )}
-                        sizeY={parseInt(
-                          document.getElementById("oyunAlaniYinput").value,
-                        )}
-                        coefficientRatios={[
-                          parseInt(document.getElementById("ratioZero").value),
-                          parseInt(document.getElementById("ratioTwo").value),
-                          parseInt(document.getElementById("ratioThree").value),
-                        ]}
-                      ></Board>
-                     </>
+                      <>
+                        <Board
+                          host={host}
+                          ip={staticHostIp}
+                          port={staticHostPort}
+                          socket={socket}
+                          name={this.state.name}
+                          sizeX={parseInt(
+                            document.getElementById("oyunAlaniXinput").value,
+                          )}
+                          sizeY={parseInt(
+                            document.getElementById("oyunAlaniYinput").value,
+                          )}
+                          coefficientRatios={[
+                            parseInt(
+                              document.getElementById("ratioZero").value,
+                            ),
+                            parseInt(document.getElementById("ratioTwo").value),
+                            parseInt(
+                              document.getElementById("ratioThree").value,
+                            ),
+                          ]}
+                        ></Board>
+                      </>
                     ) : null}
                   </Grid.Column>
                   <Grid.Column>
@@ -147,7 +153,7 @@ class App extends Component {
                   </Grid.Column>
                 </Grid.Row>
               </Grid>
-            ) : { playerEntered } ? (
+            ) : !playerEntered ? (
               <Form>
                 <Form.Group unstackable widths={2}>
                   <Form.Field>
@@ -171,7 +177,15 @@ class App extends Component {
                   </Form.Field>
                 </Form.Group>
               </Form>
-            ) : null}
+            ) : (
+              <>
+                <Board
+                  host={host}
+                  socket={socket}
+                  name={this.state.name}
+                ></Board>
+              </>
+            )}
           </div>
         ) : (
           <>
@@ -191,10 +205,9 @@ class App extends Component {
             />
             <Button
               onClick={() => {
-                if(this.state.host) {
+                if (this.state.host) {
                   socket = io(`http://${staticHostIp}:${staticHostPort}`);
-                  socket.emit("newPlayer", this.state.name)
-                
+                  socket.emit("newPlayer", this.state.name);
                 }
                 this.setState({ dropdownSelected: true });
               }}
