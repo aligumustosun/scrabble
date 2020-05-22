@@ -57,7 +57,8 @@ class App extends Component {
                 <Grid.Row>
                   <Grid.Column>
                     {this.state.showBoard ? (
-                      <Board
+                      <><Board
+                        host={host}
                         ip={staticHostIp}
                         port={staticHostPort}
                         socket={socket}
@@ -74,6 +75,7 @@ class App extends Component {
                           parseInt(document.getElementById("ratioThree").value),
                         ]}
                       ></Board>
+                     </>
                     ) : null}
                   </Grid.Column>
                   <Grid.Column>

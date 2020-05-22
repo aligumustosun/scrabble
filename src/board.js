@@ -1,15 +1,11 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import { Icon, Label, Menu, Table } from "semantic-ui-react";
+import { Icon, Label, Menu, Table, Button } from "semantic-ui-react";
 import PlayGame from "./PlayGame";
 import axios from "axios";
 import io from "socket.io-client";
 
 const socket = io("http://25.67.169.153:3000");
-
-socket.on("event", message => {
-  console.log(message);
-})
 
 socket.on("newRows", (rows) => {
   if (this.state.player) {
@@ -52,7 +48,8 @@ class Board extends Component {
       player: true,
       host: true,
       ip: "25.67.169.153",
-      turn : false,
+      turn: false,
+      gameStarted: false,
     };
   }
 
@@ -114,10 +111,15 @@ class Board extends Component {
   };
 
   componentDidMount() {
-    const { ip,port } = this.props;
-    axios.get(`http://${ip}:${port}/getWords`).then(({ data: wordList }) => {
-      this.setState({ wordList });
-      this.initializeRows(wordList);
+    const { ip, port, socket } = this.props;
+    if (this.props.host) {
+      axios.get(`http://${ip}:${port}/getWords`).then(({ data: wordList }) => {
+        this.setState({ wordList });
+        this.initializeRows(wordList);
+      });
+    }
+    socket.on("newRows", (rows) => {
+      this.setState({ rows });
     });
   }
 
@@ -210,7 +212,7 @@ class Board extends Component {
           });
           this.setState({ rows });
           coefficientPoints.then((points) => {
-            resolve({point : points * newLetterSquares.length, rows});
+            resolve({ point: points * newLetterSquares.length, rows });
           });
         }
       });
@@ -265,9 +267,11 @@ class Board extends Component {
               : null}
           </Table.Body>
         </Table>
-        {this.state.player ? (
-          <PlayGame checkWord={this.checkWordAndGetPoint} />
-        ) : null}
+        {this.props.host ?  
+          <Button onClick ={() => this.props.socket.emit("changeRows", this.state.rows)} >Oyunu başlat</Button>  
+         : null }        
+        <PlayGame checkWord={this.checkWordAndGetPoint} />
+
       </>
     );
   }
