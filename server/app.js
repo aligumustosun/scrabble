@@ -60,6 +60,7 @@ app.get("/getWords", async (req, res) => {
 
 app.get("/checkWord", async(req,res) => {
   const { word } = req.query;
+  console.log({word})
   const fileAddr = path.join(__dirname, "dictionary.txt");
   fs.readFile(fileAddr, "utf8", (err, data) => {
     const wordList = data.split("\n");

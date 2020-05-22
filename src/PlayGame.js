@@ -39,6 +39,7 @@ class PlayGame extends Component {
     axios
       .get("http://25.67.169.153:3000/checkWord?word=" + wordToCheck)
       .then(({ data: included }) => {
+        console.log(included)
         checkWord(vertical, wordToCheck, included).then(({ point, rows }) => {
           points += point;
           socket.emit("changeRows", rows);
