@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Form, Button, Input, Dropdown, Label } from "semantic-ui-react";
-import aixos from "axios";
+import axios from "axios";
 
 let socket;
 class PlayGame extends Component {

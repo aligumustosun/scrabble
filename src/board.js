@@ -114,7 +114,7 @@ class Board extends Component {
     });
     socket.on("newRows", ({ rows, clientCounter, myClientList }) => {
       console.log({ rows });
-      if (!this.state.turn) {
+      if (myClientList[clientCounter]!=name) {
         this.setState({ rows, clientCounter, myClientList });
       }
     });
@@ -224,10 +224,9 @@ class Board extends Component {
             square.empty = false;
             rows[square.x][square.y] = newSquare;
           });
-          if (this.state.turn) {
-            this.setState({ rows });
-          }
-          this.props.socket.emit("changeRows", rows);
+            this.setState({ rows }); 
+            this.props.socket.emit("changeRows", rows);
+          
           coefficientPoints.then((points) => {
             resolve({ point: points * newLetterSquares.length, rows });
           });
