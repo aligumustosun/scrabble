@@ -96,7 +96,7 @@ class Board extends Component {
       valuesToEnter.push(3);
     }
     let newRows = this.fillValues(rows, valuesToEnter);
-    if (this.props.name === this.state.myClientList[this.state.clientCounter]){
+    if (this.state.turn){
       this.setState({rows: newRows})
     }
     this.props.socket.emit("changeRows", newRows)
@@ -115,6 +115,24 @@ class Board extends Component {
       this.setState({ rows, clientCounter, myClientList });
     });
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps !== this.props && this.props.myClientList !== undefined) {
+      console.log({ prevProps, props: this.props });
+      if (
+        prevProps.clientCounter !== this.props.clientCounter &&
+        this.props.myClientList[this.props.clientCounter] == this.props.name
+      ) {
+        this.setState({ turn: true });
+        console.log("if deyim");
+      } else if (
+        this.props.myClientList[this.props.clientCounter] !== this.props.name
+      ) {
+        this.setState({ turn: false });
+      }
+    }
+  }
+
 
   generateProps = (square, i, rowLength) => {
     const { startPoint } = this.state;

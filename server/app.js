@@ -33,7 +33,7 @@ socket.on("connection", (socket) => {
   });
   socket.on("changeRows", (rows) => {
     console.log("change th efucking rows");
-    socket.broadcast.emit("newRows", {
+    socket.emit("newRows", {
       rows,
       clientCounter: clientCounter % myClientList.length,
       myClientList,
