@@ -12,23 +12,12 @@ class PlayGame extends Component {
       vertical: true,
       wordToCheck: "a",
       totalPoints: 0,
-      turn: false,
+      turn: props.turn,
     };
   }
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps !== this.props && this.props.myClientList !== undefined) {
-      console.log({ prevProps, props: this.props });
-      if (
-        prevProps.clientCounter !== this.props.clientCounter &&
-        this.props.myClientList[this.props.clientCounter] == this.props.name
-      ) {
-        this.setState({ turn: true });
-        console.log("if deyim");
-      } else if (
-        this.props.myClientList[this.props.clientCounter] !== this.props.name
-      ) {
-        this.setState({ turn: false });
-      }
+    if (prevProps.turn !== this.state.turn) {
+      this.setState({ turn })
     }
   }
 
@@ -41,7 +30,7 @@ class PlayGame extends Component {
       .then(({ data: included }) => {
         console.log(included)
         checkWord(vertical, wordToCheck, included).then(({ point, rows }) => {
-          points += point;
+          points += (typeof point=='number') ? point : 0;
           socket.emit("changeRows", rows);
           this.setState({ totalPoints: points });
         });

@@ -114,28 +114,15 @@ class Board extends Component {
     });
     socket.on("newRows", ({ rows, clientCounter, myClientList }) => {
       console.log({ rows });
+      if(myClientList[(clientCounter+1)%myClientList.length] == this.props.name) {
+        this.setState({ turn : true})
+      }
       if (myClientList[clientCounter]!=name) {
-        this.setState({ rows, clientCounter, myClientList });
+        this.setState({ rows });
       }
     });
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps !== this.props && this.props.myClientList !== undefined) {
-      console.log({ prevProps, props: this.props });
-      if (
-        prevProps.clientCounter !== this.props.clientCounter &&
-        this.props.myClientList[this.props.clientCounter] == this.props.name
-      ) {
-        this.setState({ turn: true });
-        console.log("if deyim");
-      } else if (
-        this.props.myClientList[this.props.clientCounter] !== this.props.name
-      ) {
-        this.setState({ turn: false });
-      }
-    }
-  }
 
   generateProps = (square, i, rowLength) => {
     const { startPoint } = this.state;
@@ -176,11 +163,11 @@ class Board extends Component {
   };
 
   checkWordAndGetPoint = async (vertical, word, included) => {
+    this.setState({turn : false})
     return new Promise((resolve, rej) => {
       const { startPoint, rows, wordList } = this.state;
-      if (!included) {
-        resolve(0, rows);
-      }
+      
+      
       const getSquares = async () => {
         return Promise.all(
           Array.from(word).map((char, i) => {
@@ -193,6 +180,11 @@ class Board extends Component {
         );
       };
 
+      
+      if (!included) {
+        resolve(0, rows);
+      }
+      else {
       getSquares().then(async (squares) => {
         const blackSquares = squares.filter(
           (square) => square.coefficient == 0,
@@ -232,6 +224,7 @@ class Board extends Component {
           });
         }
       });
+    }
     });
   };
 
@@ -270,7 +263,7 @@ class Board extends Component {
   };
 
   render() {
-    const { rows, gameStarted } = this.state;
+    const { rows, gameStarted, turn } = this.state;
 
     return (
       <>
@@ -295,6 +288,7 @@ class Board extends Component {
           </Button>
         ) : null}
         <PlayGame
+          turn={turn}
           socket={this.props.socket}
           name={this.props.name}
           clientCounter={this.state.clientCounter}
