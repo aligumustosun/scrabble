@@ -114,9 +114,8 @@ class Board extends Component {
   };
 
   componentDidMount() {
-    const { ip } = this.state;
-
-    axios.get(`http://${ip}:3000/getWords`).then(({ data: wordList }) => {
+    const { ip,port } = this.props;
+    axios.get(`http://${ip}:${port}/getWords`).then(({ data: wordList }) => {
       this.setState({ wordList });
       this.initializeRows(wordList);
     });

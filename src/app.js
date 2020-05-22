@@ -19,22 +19,18 @@ class App extends Component {
     super(props);
     this.state = {
       showBoard: false,
-      player:true,
+      player: true,
     };
   }
-
-
 
   OyunuKur = () => {
     this.setState({ showBoard: false }, () =>
       this.setState({ showBoard: true })
     );
   };
-  componentDidMount() {
-    
-  }
+  componentDidMount() {}
   render() {
-    const { rows,ip } = this.state;
+    const { rows } = this.state;
 
     return (
       <>
@@ -44,10 +40,11 @@ class App extends Component {
               <Grid.Column>
                 {this.state.showBoard ? (
                   <Board
-                    ip={ip}
+                    ip={document.getElementById("ipInput").value}
                     sizeX={parseInt(
                       document.getElementById("oyunAlaniXinput").value
                     )}
+                    port={document.getElementById('portInput').value}
                     sizeY={parseInt(
                       document.getElementById("oyunAlaniYinput").value
                     )}
@@ -112,6 +109,7 @@ class App extends Component {
                     </Form.Field>
                     <Form.Field>
                       <Form.Input
+                        id={"winCon"}
                         label={"Kazanma Puanı"}
                         placeholder="Kazanma Puanı"
                         width={14}
@@ -121,6 +119,7 @@ class App extends Component {
                   <Form.Group unstackable widths={2}>
                     <Form.Field>
                       <Form.Input
+                        id={"ipInput"}
                         label={"IP Adresi"}
                         placeholder="IP Adresi"
                         width={14}
@@ -128,6 +127,7 @@ class App extends Component {
                     </Form.Field>
                     <Form.Field>
                       <Form.Input
+                        id={"portInput"}
                         label={"Port"}
                         placeholder="Port"
                         width={14}
@@ -135,10 +135,10 @@ class App extends Component {
                     </Form.Field>
                   </Form.Group>
                   <Form.Field>
-                    <Button onClick={() => this.OyunuKur()}>Oyunu Kur</Button>
+                    <Button onClick={() => this.OyunuKur()}>Oyuna Bağlan</Button>
                   </Form.Field>
                 </Form>
-                <JoinGame/>
+                <JoinGame />
               </Grid.Column>
             </Grid.Row>
           </Grid>
