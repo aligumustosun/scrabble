@@ -35,6 +35,7 @@ class App extends Component {
     this.setState({ showBoard: false }, () =>
       this.setState({ showBoard: true }),
     );
+    socket.emit("startGame")
   };
 
   JoinGame = () => {

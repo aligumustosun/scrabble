@@ -40,11 +40,11 @@ socket.on("connection", (socket) => {
 
   
   socket.on("startGame", () => {
-    console.log({myClientList, clientCounter})
     changeTurn()
   })
   
   socket.on("changeRows", rows => {
+    console.log("change th efucking rows")
     socket.emit("newRows", rows);
     changeTurn()
   })

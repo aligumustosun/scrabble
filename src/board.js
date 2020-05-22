@@ -3,16 +3,25 @@ import ReactDOM from "react-dom";
 import { Icon, Label, Menu, Table, Button } from "semantic-ui-react";
 import PlayGame from "./PlayGame";
 import axios from "axios";
-import io from "socket.io-client";
 
-const socket = io("http://25.67.169.153:3000");
 
-socket.on("newRows", (rows) => {
-  if (this.state.player) {
-    this.setState({ rows });
-  }
-});
+const renderSquare = (square,props) => {
+    let returnValue;
+    switch (square.coefficient) {
+      case 0:
+        returnValue = <div {...props}>{square.letter.toUpperCase()}</div>;
+      case 1:
+        returnValue = <div {...props}>{square.letter.toUpperCase()}</div>;
+      case 2:
+        returnValue = <div {...props}>{square.letter.toUpperCase()}</div>;
+      case 3:
+        returnValue = <div {...props}>{square.letter.toUpperCase()}</div>;
+      default:
+        returnValue = <div {...props}>{square.letter.toUpperCase()}</div>;
+    }
+    return <>{returnValue}</>;
 
+} 
 class square {
   constructor(x, y) {
     this.coefficient = 1;
@@ -21,22 +30,7 @@ class square {
     this.x = x;
     this.y = y;
   }
-  render(props) {
-    let returnValue;
-    switch (this.coefficient) {
-      case 0:
-        returnValue = <div {...props}>{this.letter.toUpperCase()}</div>;
-      case 1:
-        returnValue = <div {...props}>{this.letter.toUpperCase()}</div>;
-      case 2:
-        returnValue = <div {...props}>{this.letter.toUpperCase()}</div>;
-      case 3:
-        returnValue = <div {...props}>{this.letter.toUpperCase()}</div>;
-      default:
-        returnValue = <div {...props}>{this.letter.toUpperCase()}</div>;
-    }
-    return <>{returnValue}</>;
-  }
+  
 }
 
 class Board extends Component {
@@ -46,8 +40,6 @@ class Board extends Component {
       rows: null,
       startPoint: { x: 0, y: 0 },
       player: true,
-      host: true,
-      ip: "25.67.169.153",
       turn: false,
       gameStarted: false,
     };
@@ -248,7 +240,7 @@ class Board extends Component {
           console.log(square);
         }}
       >
-        {square.render(this.generateProps(square, i, row.length))}
+        {renderSquare(square, this.generateProps(square, i, row.length))}
       </Table.Cell>
     ));
   };
@@ -268,7 +260,10 @@ class Board extends Component {
           </Table.Body>
         </Table>
         {this.props.host ?  
-          <Button onClick ={() => this.props.socket.emit("changeRows", this.state.rows)} >Oyunu başlat</Button>  
+          <Button onClick ={() => {
+            console.log(this.props.socket)
+            this.props.socket.emit("changeRows", this.state.rows)
+          }} >Oyunu başlat</Button>  
          : null }        
         <PlayGame checkWord={this.checkWordAndGetPoint} />
 
