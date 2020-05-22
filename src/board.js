@@ -107,9 +107,9 @@ class Board extends Component {
         this.initializeRows(wordList);
       });
     }
-    socket.on("newRows", (rows) => {
+    socket.on("newRows", ({ rows, clientCounter, myClientList }) => {
       console.log({ rows });
-      this.setState({ rows });
+      this.setState({ rows, clientCounter, myClientList });
     });
     socket.on("yourTurn", (name) => {
       this.setState({ turn: name == this.state.name });
@@ -273,6 +273,8 @@ class Board extends Component {
         <PlayGame
           socket={this.props.socket}
           name={this.props.name}
+          clientCounter={this.state.clientCounter}
+          myClientList={this.state.myClientList}
           checkWord={this.checkWordAndGetPoint}
         />
       </>

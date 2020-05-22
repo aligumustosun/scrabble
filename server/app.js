@@ -41,7 +41,11 @@ socket.on("connection", (socket) => {
 
   socket.on("changeRows", (rows) => {
     console.log("change th efucking rows");
-    socket.broadcast.emit("newRows", rows);
+    socket.emit("newRows", {
+      rows,
+      clientCounter: clientCounter % myClientList.length,
+      myClientList,
+    });
     clientCounter++;
     changeTurn();
   });

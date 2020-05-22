@@ -14,12 +14,22 @@ class PlayGame extends Component {
       totalPoints: 0,
       turn: false,
     };
-    socket.on("yourTurn", (name) => {
-      console.log({ name, props });
-      if (props.name == name) {
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps !== this.props && this.props.myClientList !== undefined) {
+      console.log({ prevProps, props: this.props });
+      if (
+        prevProps.clientCounter !== this.props.clientCounter &&
+        this.props.myClientList[this.props.clientCounter] == this.props.name
+      ) {
         this.setState({ turn: true });
+        console.log("if deyim");
+      } else if (
+        this.props.myClientList[this.props.clientCounter] !== this.props.name
+      ) {
+        this.setState({ turn: false });
       }
-    });
+    }
   }
 
   checkWord = () => {
@@ -35,6 +45,7 @@ class PlayGame extends Component {
   };
 
   render() {
+    const { turn } = this.state;
     return (
       <div>
         <Form style={{ marginLeft: "2vh" }}>
@@ -80,7 +91,7 @@ class PlayGame extends Component {
             </Form.Field>
           </Form.Group>
           <Form.Group unstackable widths={1}>
-            {this.state.turn ? (
+            {turn ? (
               <Button onClick={() => this.checkWord()}> Check word.</Button>
             ) : (
               <p>It's not your turn yet.</p>
