@@ -20,7 +20,8 @@ class PlayGame extends Component {
       wordToCheck: "a",
       totalPoints: 0,
       turn: props.turn,
-      table: {}
+      table: {},
+      name: props.name
     };
   }
   componentDidUpdate(prevProps, prevState) {
@@ -41,15 +42,14 @@ class PlayGame extends Component {
           points += (typeof point=='number') ? point : 0;
           socket.emit("changeRows", rows);
           socket.emit("changePointTable", {name,points});
-          table[name]=points;
-          this.setState({ totalPoints: points, table });
+          this.setState({ totalPoints: points });
         });
         this.setState({ turn: false });
       });
   };
 
   render() {
-    const { turn, table } = this.state;
+    const { turn, table, name } = this.state;
     return (
       <div>
         <Form style={{ marginLeft: "2vh" }}>
@@ -101,7 +101,7 @@ class PlayGame extends Component {
               <p>It's not your turn yet.</p>
             )}
           </Form.Group>
-          <PlayerTable table={table}/>
+          <PlayerTable table={table} name={name}/>
         </Form>
       </div>
     );

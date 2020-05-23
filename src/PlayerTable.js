@@ -14,48 +14,56 @@ class PlayerTable extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.table !== this.props.table) {
-      console.log(this.props.table);
-      const names = Object.keys(this.props.table);
-      const totalPoints = Object.values(this.props.table);
-      this.setState({ names, totalPoints })
+      const { table,name } = this.props;
+      const names = [];
+      const totalPoints = [];
+
+      Object.entries(table)
+        .filter(([key,value]) => key != name)
+        .forEach(([key, value]) => {
+          names.push(key);
+          totalPoints.push(value);
+        });
+      this.setState({ names, totalPoints });
     }
   }
 
   createContent = () => {
-    const { names, totalPoints }= this.state;
-    return (
-      this.state.names ? 
-        <><Form.Group>
-          {names.map(name => 
-            <Form.Field style={{ marginLeft: "1%" }}>
-            <Label style={{ borderStyle: "none" }} basic size={"huge"}>
-              {name}
-            </Label>
-          </Form.Field>)}
-        </Form.Group>
-              
+    const { names, totalPoints } = this.state;
+    return this.state.names ? (
+      <>
         <Form.Group>
-          {totalPoints.map(totalPoint =>
-           <>
-           <Form.Field>
-            <Image
-              src={
-                "https://www.shareicon.net/data/512x512/2016/06/27/787159_people_512x512.png"
-              }
-              size="tiny"
-              circular
-            />
-          </Form.Field>
-          <Form.Field style={{ placeSelf: "center" }}>
-            <Label circular color={"blue"} size={"massive"}>
-              {totalPoint}
-            </Label>
-          </Form.Field>
-          </>)}
+          {names.map((name) => (
+            <Form.Field style={{ marginLeft: "1%" }}>
+              <Label style={{ borderStyle: "none" }} basic size={"huge"}>
+                {name}
+              </Label>
+            </Form.Field>
+          ))}
         </Form.Group>
-        </>
-      : null 
-    );
+
+        <Form.Group>
+          {totalPoints.map((totalPoint) => (
+            <>
+              <Form.Field>
+                <Image
+                  src={
+                    "https://www.shareicon.net/data/512x512/2016/06/27/787159_people_512x512.png"
+                  }
+                  size="tiny"
+                  circular
+                />
+              </Form.Field>
+              <Form.Field style={{ placeSelf: "center" }}>
+                <Label circular color={"blue"} size={"massive"}>
+                  {totalPoint}
+                </Label>
+              </Form.Field>
+            </>
+          ))}
+        </Form.Group>
+      </>
+    ) : null;
   };
 
   render() {
