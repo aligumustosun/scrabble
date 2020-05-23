@@ -39,6 +39,7 @@ class Board extends Component {
       player: true,
       turn: props.host ? true : false,
       gameStarted: false,
+      name: props.name
     };
   }
 
@@ -163,6 +164,7 @@ class Board extends Component {
   };
 
   checkWordAndGetPoint = async (vertical, word, included) => {
+    const { name } = this.state;
     this.setState({turn : false})
     return new Promise((resolve, rej) => {
       const { startPoint, rows, wordList } = this.state;
@@ -182,7 +184,7 @@ class Board extends Component {
 
       
       if (!included) {
-        resolve(0, rows);
+        resolve(0, rows, name);
       }
       else {
       getSquares().then(async (squares) => {
@@ -208,7 +210,7 @@ class Board extends Component {
           unmatchedSquares.length + blackSquares.length > 0 ||
           filledSquares.length < 1
         ) {
-          resolve(0, rows);
+          resolve(0, rows, name);
         } else {
           squares.forEach((square, i) => {
             const newSquare = square;
@@ -220,7 +222,7 @@ class Board extends Component {
             this.props.socket.emit("changeRows", rows);
           
           coefficientPoints.then((points) => {
-            resolve({ point: points * newLetterSquares.length, rows });
+            resolve({ point: points * newLetterSquares.length, rows, name });
           });
         }
       });

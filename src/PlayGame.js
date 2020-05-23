@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Form, Button, Input, Dropdown, Label } from "semantic-ui-react";
 import axios from "axios";
+import PlayerTable from "./PlayerTable";
 
 let socket;
 class PlayGame extends Component {
@@ -8,11 +9,16 @@ class PlayGame extends Component {
     super(props);
 
     socket = props.socket;
+    socket.on("newPointTable", table => {
+      this.setState({ table });
+    })
+
     this.state = {
       vertical: true,
       wordToCheck: "a",
       totalPoints: 0,
       turn: props.turn,
+      table: {}
     };
   }
   componentDidUpdate(prevProps, prevState) {
@@ -22,24 +28,26 @@ class PlayGame extends Component {
   }
 
   checkWord = () => {
-    const { wordToCheck, vertical } = this.state;
+    const { wordToCheck, vertical, table } = this.state;
     let points = this.state.totalPoints;
     const { checkWord } = this.props;
     axios
       .get("http://25.67.169.153:3000/checkWord?word=" + wordToCheck)
       .then(({ data: included }) => {
         console.log(included)
-        checkWord(vertical, wordToCheck, included).then(({ point, rows }) => {
+        checkWord(vertical, wordToCheck, included).then(({ point, rows, name }) => {
           points += (typeof point=='number') ? point : 0;
           socket.emit("changeRows", rows);
-          this.setState({ totalPoints: points });
+          socket.emit("changePointTable", (name,points));
+          table[name]=points;
+          this.setState({ totalPoints: points, table });
         });
         this.setState({ turn: false });
       });
   };
 
   render() {
-    const { turn } = this.state;
+    const { turn, table } = this.state;
     return (
       <div>
         <Form style={{ marginLeft: "2vh" }}>
@@ -91,6 +99,7 @@ class PlayGame extends Component {
               <p>It's not your turn yet.</p>
             )}
           </Form.Group>
+          <PlayerTable table={table}/>
         </Form>
       </div>
     );

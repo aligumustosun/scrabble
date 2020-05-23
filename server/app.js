@@ -22,6 +22,9 @@ const socket = require("socket.io")(server, {
 const myClientList = [];
 let clientCounter = 0;
 
+
+const pointTable = {};
+
 socket.on("connection", (socket) => {
   socket.on("disconnect", (socket) => {
     delete myClientList[socket.id];
@@ -39,6 +42,12 @@ socket.on("connection", (socket) => {
     });
     clientCounter++;
   });
+
+  socket.on("changePointTable", (name,value) => {
+    pointTable[name]=value;
+    socket.broadcast.emit("newPointTable", pointTable);
+  })
+
 
   socket.on("comeon", (message) => {
     console.log(message);

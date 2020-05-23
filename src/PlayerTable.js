@@ -4,25 +4,39 @@ import { Image, Label, Form } from "semantic-ui-react";
 class PlayerTable extends Component {
   constructor(props) {
     super(props);
+    const names = Object.keys(props.table);
+    const totalPoints = Object.values(props.table);
     this.state = {
-      totalPoints: [0, 1],
-      names: ["Ali"],
+      totalPoints,
+      names,
     };
   }
 
-  createContent = () => {
-    return (
-      <>
-        <Form.Group>
-          <Form.Field style={{ marginLeft: "1%" }}>
-            <Label style={{ borderStyle: "none" }} basic size={"huge"}>
-              {this.state.names[0]}
-            </Label>
-          </Form.Field>
-        </Form.Group>
+  componentDidUpdate(prevProps) {
+    if (prevProps.table !== this.props.table) {
+      const names = Object.keys(this.props.table);
+      const totalPoints = Object.values(this.props.table);
+      this.setState({ names, totalPoints })
+    }
+  }
 
+  createContent = () => {
+    const { names, totalPoints }= this.state;
+    return (
+      this.state.names ? 
+        <><Form.Group>
+          {names.map(name => 
+            <Form.Field style={{ marginLeft: "1%" }}>
+            <Label style={{ borderStyle: "none" }} basic size={"huge"}>
+              {name}
+            </Label>
+          </Form.Field>)}
+        </Form.Group>
+              
         <Form.Group>
-          <Form.Field>
+          {totalPoints.map(totalPoint =>
+           <>
+           <Form.Field>
             <Image
               src={
                 "https://www.shareicon.net/data/512x512/2016/06/27/787159_people_512x512.png"
@@ -33,11 +47,13 @@ class PlayerTable extends Component {
           </Form.Field>
           <Form.Field style={{ placeSelf: "center" }}>
             <Label circular color={"blue"} size={"massive"}>
-              {this.state.totalPoints[0]}
+              {totalPoint}
             </Label>
           </Form.Field>
+          </>)}
         </Form.Group>
-      </>
+        </>
+      : null 
     );
   };
 

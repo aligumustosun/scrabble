@@ -82,7 +82,6 @@ class App extends Component {
                             ),
                           ]}
                         ></Board>
-                        <PlayerTable/>
                       </>
                     ) : null}
                   </Grid.Column>
@@ -188,7 +187,6 @@ class App extends Component {
                   socket={socket}
                   name={this.state.name}
                 ></Board>
-                <PlayerTable/>
               </>
             )}
           </div>
