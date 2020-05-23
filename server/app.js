@@ -52,10 +52,8 @@ socket.on("connection", (socket) => {
     pointTable[name]=points;
     socket.broadcast.emit("newPointTable", pointTable);
   })
-  socket.on("comeon", (message) => {
-    console.log(message);
-  });
 });
+
 socket.on("connect", function () {
   console.log("connected");
 });
@@ -79,10 +77,3 @@ app.get("/checkWord", async(req,res) => {
   });
 })
 
-app.post("/writeRows", async (req, res) => {
-  const { rows } = req.body;
-  const fileAddr = path.join(__dirname, "rows.txt");
-  fs.writeFile(fileAddr, JSON.stringify(rows), (err, data) => {
-    res.send("writed");
-  });
-});

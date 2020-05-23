@@ -290,6 +290,7 @@ class Board extends Component {
           </Button>
         ) : null}
         <PlayGame
+          ip={this.props.ip}
           turn={turn}
           socket={this.props.socket}
           name={this.props.name}

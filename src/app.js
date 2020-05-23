@@ -17,8 +17,6 @@ import Board from "./Board";
 import PlayerTable from "./PlayerTable";
 
 let socket;
-const staticHostIp = "25.67.169.153",
-  staticHostPort = "3000";
 
 class App extends Component {
   constructor(props) {
@@ -44,11 +42,12 @@ class App extends Component {
     this.setState({ playerEntered: true });
     socket = io(`http://${ip}:${port}`);
     socket.emit("newPlayer", this.state.name);
+    this.setState({ ip, port });
   };
 
   componentDidMount() {}
   render() {
-    const { rows, dropdownSelected, host, playerEntered } = this.state;
+    const { rows, dropdownSelected, host, playerEntered, serverIp } = this.state;
 
     return (
       <>
@@ -62,8 +61,8 @@ class App extends Component {
                       <>
                         <Board
                           host={host}
-                          ip={staticHostIp}
-                          port={staticHostPort}
+                          ip={serverIp}
+                          port={3000}
                           socket={socket}
                           name={this.state.name}
                           sizeX={parseInt(
@@ -144,7 +143,6 @@ class App extends Component {
                           />
                         </Form.Field>
                       </Form.Group>
-
                       <Form.Field>
                         <Button onClick={() => this.OyunuKur()}>
                           Oyunu kur
@@ -181,8 +179,8 @@ class App extends Component {
             ) : (
               <>
                 <Board
-                  ip={staticHostIp}
-                  port={staticHostPort}
+                  ip={ip}
+                  port={port}
                   host={host}
                   socket={socket}
                   name={this.state.name}
@@ -209,7 +207,9 @@ class App extends Component {
             <Button
               onClick={() => {
                 if (this.state.host) {
-                  socket = io(`http://${staticHostIp}:${staticHostPort}`);
+                  socket = io(
+                    `http://${document.getElementById("ServerIp")}:${3000}`,
+                  );
                   socket.emit("newPlayer", this.state.name);
                 }
                 this.setState({ dropdownSelected: true });
@@ -217,6 +217,11 @@ class App extends Component {
             >
               Oyuna başla
             </Button>
+            {this.state.host ? <Input 
+            id={"ServerIp"} 
+            placeholder="Server IP Adresi"
+            onChange={(e,{value}) => this.setState({ serverIp: value})}
+            ></Input> : null}
           </>
         )}
       </>

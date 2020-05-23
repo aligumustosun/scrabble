@@ -84948,10 +84948,11 @@ var PlayGame = /*#__PURE__*/function (_Component) {
           wordToCheck = _this$state.wordToCheck,
           vertical = _this$state.vertical,
           table = _this$state.table;
+      var ip = _this.props.ip;
       var points = _this.state.totalPoints;
       var checkWord = _this.props.checkWord;
 
-      _axios.default.get("http://25.67.169.153:3000/checkWord?word=" + wordToCheck).then(function (_ref) {
+      _axios.default.get("http://".concat(ip, ":3000/checkWord?word=").concat(wordToCheck)).then(function (_ref) {
         var included = _ref.data;
         console.log(included);
         checkWord(vertical, wordToCheck, included).then(function (_ref2) {
@@ -85548,6 +85549,7 @@ var Board = /*#__PURE__*/function (_Component) {
           _this3.props.socket.emit("changeRows", _this3.state.rows);
         }
       }, "Oyunu ba\u015Flat") : null, /*#__PURE__*/_react.default.createElement(_PlayGame.default, {
+        ip: this.props.ip,
         turn: turn,
         socket: this.props.socket,
         name: this.props.name,
@@ -85602,8 +85604,6 @@ function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflec
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
 
 var socket;
-var staticHostIp = "25.67.169.153",
-    staticHostPort = "3000";
 
 var App = /*#__PURE__*/function (_Component) {
   (0, _inherits2.default)(App, _Component);
@@ -85634,6 +85634,11 @@ var App = /*#__PURE__*/function (_Component) {
 
       socket = (0, _socket.default)("http://".concat(ip, ":").concat(port));
       socket.emit("newPlayer", _this.state.name);
+
+      _this.setState({
+        ip: ip,
+        port: port
+      });
     });
     _this.state = {
       showBoard: false,
@@ -85657,13 +85662,14 @@ var App = /*#__PURE__*/function (_Component) {
           rows = _this$state.rows,
           dropdownSelected = _this$state.dropdownSelected,
           host = _this$state.host,
-          playerEntered = _this$state.playerEntered;
+          playerEntered = _this$state.playerEntered,
+          serverIp = _this$state.serverIp;
       return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, dropdownSelected ? /*#__PURE__*/_react.default.createElement("div", null, host ? /*#__PURE__*/_react.default.createElement(_semanticUiReact.Grid, {
         columns: 2
       }, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Grid.Row, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Grid.Column, null, this.state.showBoard ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Board.default, {
         host: host,
-        ip: staticHostIp,
-        port: staticHostPort,
+        ip: serverIp,
+        port: 3000,
         socket: socket,
         name: this.state.name,
         sizeX: parseInt(document.getElementById("oyunAlaniXinput").value),
@@ -85730,8 +85736,8 @@ var App = /*#__PURE__*/function (_Component) {
       })), /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Field, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Button, {
         onClick: this.JoinGame
       }, " Enter the game.")))) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Board.default, {
-        ip: staticHostIp,
-        port: staticHostPort,
+        ip: ip,
+        port: port,
         host: host,
         socket: socket,
         name: this.state.name
@@ -85764,7 +85770,7 @@ var App = /*#__PURE__*/function (_Component) {
       }), /*#__PURE__*/_react.default.createElement(_semanticUiReact.Button, {
         onClick: function onClick() {
           if (_this2.state.host) {
-            socket = (0, _socket.default)("http://".concat(staticHostIp, ":").concat(staticHostPort));
+            socket = (0, _socket.default)("http://".concat(document.getElementById("ServerIp"), ":", 3000));
             socket.emit("newPlayer", _this2.state.name);
           }
 
@@ -85772,7 +85778,16 @@ var App = /*#__PURE__*/function (_Component) {
             dropdownSelected: true
           });
         }
-      }, "Oyuna ba\u015Fla")));
+      }, "Oyuna ba\u015Fla"), this.state.host ? /*#__PURE__*/_react.default.createElement(_semanticUiReact.Input, {
+        id: "ServerIp",
+        placeholder: "Server IP Adresi",
+        onChange: function onChange(e, _ref3) {
+          var value = _ref3.value;
+          return _this2.setState({
+            serverIp: value
+          });
+        }
+      }) : null));
     }
   }]);
   return App;
@@ -85807,7 +85822,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60929" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62909" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

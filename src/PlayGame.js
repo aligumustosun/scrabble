@@ -32,10 +32,11 @@ class PlayGame extends Component {
 
   checkWord = () => {
     const { wordToCheck, vertical, table } = this.state;
+    const { ip } = this.props;
     let points = this.state.totalPoints;
     const { checkWord } = this.props;
     axios
-      .get("http://25.67.169.153:3000/checkWord?word=" + wordToCheck)
+      .get(`http://${ip}:3000/checkWord?word=${wordToCheck}`)
       .then(({ data: included }) => {
         console.log(included)
         checkWord(vertical, wordToCheck, included).then(({ point, rows, name }) => {
