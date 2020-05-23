@@ -14,6 +14,7 @@ import {
 } from "semantic-ui-react";
 import io from "socket.io-client";
 import Board from "./Board";
+import PlayerTable from "./PlayerTable";
 
 let socket;
 const staticHostIp = "25.67.169.153",
@@ -81,6 +82,7 @@ class App extends Component {
                             ),
                           ]}
                         ></Board>
+                        <PlayerTable/>
                       </>
                     ) : null}
                   </Grid.Column>
@@ -186,6 +188,7 @@ class App extends Component {
                   socket={socket}
                   name={this.state.name}
                 ></Board>
+                <PlayerTable/>
               </>
             )}
           </div>
