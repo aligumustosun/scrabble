@@ -52,8 +52,6 @@ socket.on("connection", (socket) => {
     pointTable[name]=points;
     socket.broadcast.emit("newPointTable", pointTable);
   })
-
-
   socket.on("comeon", (message) => {
     console.log(message);
   });
@@ -71,7 +69,6 @@ app.get("/getWords", async (req, res) => {
   });
 });
 
-
 app.get("/checkWord", async(req,res) => {
   const { word } = req.query;
   console.log({word})
@@ -81,8 +78,6 @@ app.get("/checkWord", async(req,res) => {
     res.send(wordList.includes(word));
   });
 })
-
-
 
 app.post("/writeRows", async (req, res) => {
   const { rows } = req.body;
