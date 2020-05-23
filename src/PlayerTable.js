@@ -14,6 +14,7 @@ class PlayerTable extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.table !== this.props.table) {
+      console.log(this.props.table);
       const names = Object.keys(this.props.table);
       const totalPoints = Object.values(this.props.table);
       this.setState({ names, totalPoints })

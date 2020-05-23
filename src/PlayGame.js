@@ -9,7 +9,9 @@ class PlayGame extends Component {
     super(props);
 
     socket = props.socket;
+
     socket.on("newPointTable", table => {
+      console.log('newPoints came');
       this.setState({ table });
     })
 
@@ -38,7 +40,7 @@ class PlayGame extends Component {
         checkWord(vertical, wordToCheck, included).then(({ point, rows, name }) => {
           points += (typeof point=='number') ? point : 0;
           socket.emit("changeRows", rows);
-          socket.emit("changePointTable", (name,points));
+          socket.emit("changePointTable", {name,points});
           table[name]=points;
           this.setState({ totalPoints: points, table });
         });

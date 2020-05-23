@@ -32,6 +32,9 @@ socket.on("connection", (socket) => {
 
   socket.on("newPlayer", (name) => {
     console.log(name);
+    pointTable[name]=0;
+    console.log({pointTable})
+    socket.broadcast.emit("newPointTable", pointTable);
     myClientList.push(name);
   });
   socket.on("changeRows", (rows) => {
@@ -43,8 +46,10 @@ socket.on("connection", (socket) => {
     clientCounter++;
   });
 
-  socket.on("changePointTable", (name,value) => {
-    pointTable[name]=value;
+  socket.on("changePointTable", ({name,points}) => {
+    console.log({name, points});
+    console.log("change server")
+    pointTable[name]=points;
     socket.broadcast.emit("newPointTable", pointTable);
   })
 
