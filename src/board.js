@@ -41,7 +41,6 @@ class Board extends Component {
       gameStarted: false,
       name: props.name,
     };
-
   }
 
   shuffle(array) {
@@ -116,22 +115,24 @@ class Board extends Component {
     });
     socket.on("newRows", ({ rows, clientCounter, myClientList }) => {
       console.log({ rows });
+      console.log(myClientList);
+      console.log(clientCounter % myClientList.length);
+      console.log(clientCounter);
+
       if (
-        myClientList[(clientCounter + 1) % myClientList.length] ==
-        this.props.name
+        myClientList[clientCounter % myClientList.length] == this.props.name
       ) {
         this.setState({ turn: true });
+      } else {
+        this.setState({ turn: false });
       }
-      else {
-        this.setState({ turn : false})
-      }
-      if (myClientList[clientCounter]!=name) {
+      if (myClientList[clientCounter] != name) {
         this.setState({ rows });
       }
     });
 
-    socket.on("finishGame", ({name,points}) => {
-      console.log({name,points});
+    socket.on("finishGame", ({ name, points }) => {
+      console.log({ name, points });
     });
   }
 
@@ -290,7 +291,6 @@ class Board extends Component {
             onClick={() => {
               console.log(this.props.socket);
               this.setState({ gameStarted: true });
-              this.props.socket.emit("changeRows", this.state.rows);
             }}
           >
             Oyunu başlat

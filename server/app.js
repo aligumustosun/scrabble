@@ -42,28 +42,29 @@ socket.on("connection", (socket) => {
 
   socket.on("changeRows", (rows) => {
     serverRows = rows;
+    clientCounter++;
+    console.log(clientCounter + "change rows" );
+    console.log(clientCounter % myClientList.length);
     socket.broadcast.emit("newRows", {
       rows,
       clientCounter: clientCounter % myClientList.length,
       myClientList,
     });
-    clientCounter++;
   });
 
   socket.on("setWinCon", (winCondition) => {
     winCon = winCondition;
-  })
+  });
 
   socket.on("changePointTable", ({ name, points }) => {
     console.log({ name, points });
     console.log("change server");
-    if(points>winCon) {
+    if (points > winCon) {
       socket.broadcast.emit("finishGame", name, points);
     }
     pointTable[name] = points;
     socket.broadcast.emit("newPointTable", pointTable);
   });
-
 });
 
 socket.on("connect", function () {

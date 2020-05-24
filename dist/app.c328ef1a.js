@@ -84963,10 +84963,9 @@ var PlayGame = /*#__PURE__*/function (_Component) {
               name = _ref2.name;
           points += typeof point == 'number' ? point : 0;
 
-          if (points >= winCon) {
-            socket.emit('gameOver', {
-              name: name,
-              points: points
+          if (winCon && points >= winCon) {
+            _this.setState({
+              gameOver: true
             });
           }
 
@@ -85519,8 +85518,11 @@ var Board = /*#__PURE__*/function (_Component) {
         console.log({
           rows: rows
         });
+        console.log(myClientList);
+        console.log(clientCounter % myClientList.length);
+        console.log(clientCounter);
 
-        if (myClientList[(clientCounter + 1) % myClientList.length] == _this2.props.name) {
+        if (myClientList[clientCounter % myClientList.length] == _this2.props.name) {
           _this2.setState({
             turn: true
           });
@@ -85567,8 +85569,6 @@ var Board = /*#__PURE__*/function (_Component) {
           _this3.setState({
             gameStarted: true
           });
-
-          _this3.props.socket.emit("changeRows", _this3.state.rows);
         }
       }, "Oyunu ba\u015Flat") : null, /*#__PURE__*/_react.default.createElement(_PlayGame.default, {
         ip: this.props.ip,
@@ -85854,7 +85854,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63190" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "44326" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
