@@ -85524,6 +85524,10 @@ var Board = /*#__PURE__*/function (_Component) {
           _this2.setState({
             turn: true
           });
+        } else {
+          _this2.setState({
+            turn: false
+          });
         }
 
         if (myClientList[clientCounter] != name) {
@@ -85682,7 +85686,9 @@ var App = /*#__PURE__*/function (_Component) {
           dropdownSelected = _this$state.dropdownSelected,
           host = _this$state.host,
           playerEntered = _this$state.playerEntered,
-          serverIp = _this$state.serverIp;
+          serverIp = _this$state.serverIp,
+          ip = _this$state.ip,
+          port = _this$state.port;
       return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, dropdownSelected ? /*#__PURE__*/_react.default.createElement("div", null, host ? /*#__PURE__*/_react.default.createElement(_semanticUiReact.Grid, {
         columns: 2
       }, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Grid.Row, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Grid.Column, null, this.state.showBoard ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Board.default, {
@@ -85691,7 +85697,7 @@ var App = /*#__PURE__*/function (_Component) {
         port: 3000,
         socket: socket,
         name: this.state.name,
-        winCon: document.getElementById("winCon".value),
+        winCon: parseInt(document.getElementById("winCon".value)),
         sizeX: parseInt(document.getElementById("oyunAlaniXinput").value),
         sizeY: parseInt(document.getElementById("oyunAlaniYinput").value),
         coefficientRatios: [parseInt(document.getElementById("ratioZero").value), parseInt(document.getElementById("ratioTwo").value), parseInt(document.getElementById("ratioThree").value)]
@@ -85745,16 +85751,20 @@ var App = /*#__PURE__*/function (_Component) {
         widths: 2
       }, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Field, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Input, {
         id: "ipInput",
+        defaultValue: "25.68.159.146",
         label: "IP Adresi",
         placeholder: "IP Adresi",
         width: 14
       })), /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Field, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Input, {
         id: "portInput",
+        defaultValue: "3000",
         label: "Port",
         placeholder: "Port",
         width: 14
       })), /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Field, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Button, {
-        onClick: this.JoinGame
+        onClick: function onClick() {
+          return _this2.JoinGame();
+        }
       }, " Enter the game.")))) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Board.default, {
         ip: ip,
         port: port,
@@ -85791,7 +85801,7 @@ var App = /*#__PURE__*/function (_Component) {
       }), /*#__PURE__*/_react.default.createElement(_semanticUiReact.Button, {
         onClick: function onClick() {
           if (_this2.state.host) {
-            socket = (0, _socket.default)("http://".concat(document.getElementById("ServerIp"), ":", 3000));
+            socket = (0, _socket.default)("http://".concat(document.getElementById("ServerIp").value, ":3000"));
             socket.emit("newPlayer", _this2.state.name);
           }
 
@@ -85843,7 +85853,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "42542" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "44202" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

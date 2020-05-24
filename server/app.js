@@ -20,11 +20,10 @@ const socket = require("socket.io")(server, {
 });
 
 const myClientList = [];
-let clientCounter = 0;
-
+let clientCounter = -1;
 
 const pointTable = {};
-
+let serverRows;
 socket.on("connection", (socket) => {
   socket.on("disconnect", (socket) => {
     delete myClientList[socket.id];
@@ -32,12 +31,16 @@ socket.on("connection", (socket) => {
 
   socket.on("newPlayer", (name) => {
     console.log(name);
-    pointTable[name]=0;
-    console.log({pointTable})
+    pointTable[name] = 0;
+    console.log({ pointTable });
     socket.broadcast.emit("newPointTable", pointTable);
+    socket.broadcast.emit("newRows", serverRows);
     myClientList.push(name);
+    clientCounter++;
   });
+
   socket.on("changeRows", (rows) => {
+    serverRows = rows;
     socket.broadcast.emit("newRows", {
       rows,
       clientCounter: clientCounter % myClientList.length,
@@ -46,17 +49,17 @@ socket.on("connection", (socket) => {
     clientCounter++;
   });
 
-  socket.on("changePointTable", ({name,points}) => {
-    console.log({name, points});
-    console.log("change server")
-    pointTable[name]=points;
+  socket.on("changePointTable", ({ name, points }) => {
+    console.log({ name, points });
+    console.log("change server");
+    pointTable[name] = points;
     socket.broadcast.emit("newPointTable", pointTable);
-  })
+  });
 
-  socket.on('gameOver', function({name, points}){
-    socket.broadcast.emit('finishGame',name,points);
-    console.log('Win Con met.')
-  })
+  socket.on("gameOver", function ({ name, points }) {
+    socket.broadcast.emit("finishGame", name, points);
+    console.log("Win Con met.");
+  });
 });
 
 socket.on("connect", function () {
@@ -72,13 +75,12 @@ app.get("/getWords", async (req, res) => {
   });
 });
 
-app.get("/checkWord", async(req,res) => {
+app.get("/checkWord", async (req, res) => {
   const { word } = req.query;
-  console.log({word})
+  console.log({ word });
   const fileAddr = path.join(__dirname, "dictionary.txt");
   fs.readFile(fileAddr, "utf8", (err, data) => {
     const wordList = data.split("\n");
     res.send(wordList.includes(word));
   });
-})
-
+});

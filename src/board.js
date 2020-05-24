@@ -121,7 +121,10 @@ class Board extends Component {
       ) {
         this.setState({ turn: true });
       }
-      if (myClientList[clientCounter] != name) {
+      else {
+        this.setState({ turn : false})
+      }
+      if (myClientList[clientCounter]!=name) {
         this.setState({ rows });
       }
     });
