@@ -42,6 +42,7 @@ class Board extends Component {
       name: props.name,
     };
     props.socket.on("sendWinCon", (winCon) => {
+
       this.setState({ winCon });
     });
   }
@@ -121,7 +122,6 @@ class Board extends Component {
       console.log(myClientList);
       console.log(clientCounter % myClientList.length);
       console.log(clientCounter);
-
       if (
         myClientList[clientCounter % myClientList.length] == this.props.name
       ) {
@@ -135,6 +135,7 @@ class Board extends Component {
     });
 
     socket.on("finishGame", ({ name, points }) => {
+      alert(`${name} ${points} puan ile oyunu kazandı.`)
       console.log({ name, points });
     });
   }

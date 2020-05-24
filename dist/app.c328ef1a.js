@@ -84968,6 +84968,7 @@ var PlayGame = /*#__PURE__*/function (_Component) {
               gameOver: true
             });
 
+            alert("Tebrikler ".concat(points, " ile oyunu kazand\u0131n."));
             console.log("Kazandım!!");
           }
 
@@ -85546,6 +85547,7 @@ var Board = /*#__PURE__*/function (_Component) {
       socket.on("finishGame", function (_ref7) {
         var name = _ref7.name,
             points = _ref7.points;
+        alert("".concat(name, " ").concat(points, " puan ile oyunu kazand\u0131."));
         console.log({
           name: name,
           points: points
@@ -85859,7 +85861,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "44790" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50014" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

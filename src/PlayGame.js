@@ -44,6 +44,7 @@ class PlayGame extends Component {
             points += typeof point == "number" ? point : 0;
             if (winCon && points >= winCon) {
               this.setState({ gameOver: true });
+              alert(`Tebrikler ${points} ile oyunu kazandın.`)
               console.log("Kazandım!!");
             }
             socket.emit("changeRows", rows);
