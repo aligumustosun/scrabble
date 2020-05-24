@@ -10,10 +10,10 @@ class PlayGame extends Component {
 
     socket = props.socket;
 
-    socket.on("newPointTable", table => {
-      console.log('newPoints came');
+    socket.on("newPointTable", (table) => {
+      console.log("newPoints came");
       this.setState({ table });
-    })
+    });
 
     this.state = {
       vertical: true,
@@ -21,33 +21,36 @@ class PlayGame extends Component {
       totalPoints: 0,
       turn: props.turn,
       table: {},
-      name: props.name
+      name: props.name,
     };
   }
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.turn !== this.props.turn) {
-      this.setState({ turn: this.props.turn })
+      this.setState({ turn: this.props.turn });
     }
   }
 
   checkWord = () => {
     const { wordToCheck, vertical, table } = this.state;
-    const { ip,winCon } = this.props;
+    const { ip, winCon } = this.props;
     let points = this.state.totalPoints;
     const { checkWord } = this.props;
     axios
       .get(`http://${ip}:3000/checkWord?word=${wordToCheck}`)
       .then(({ data: included }) => {
-        console.log(included)
-        checkWord(vertical, wordToCheck, included).then(({ point, rows, name }) => {
-          points += (typeof point=='number') ? point : 0;
-          if(winCon && points >= winCon ){
-            this.setState({ gameOver: true})
+        console.log(included);
+        checkWord(vertical, wordToCheck, included).then(
+          ({ point, rows, name }) => {
+            points += typeof point == "number" ? point : 0;
+            if (winCon && points >= winCon) {
+              this.setState({ gameOver: true });
+              console.log("Kazandım!!");
+            }
+            socket.emit("changeRows", rows);
+            socket.emit("changePointTable", { name, points });
+            this.setState({ totalPoints: points });
           }
-          socket.emit("changeRows", rows);
-          socket.emit("changePointTable", {name,points});
-          this.setState({ totalPoints: points });
-        });
+        );
         this.setState({ turn: false });
       });
   };
@@ -105,7 +108,7 @@ class PlayGame extends Component {
               <p>It's not your turn yet.</p>
             )}
           </Form.Group>
-          <PlayerTable table={table} name={name}/>
+          <PlayerTable table={table} name={name} />
         </Form>
       </div>
     );

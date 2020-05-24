@@ -84961,12 +84961,14 @@ var PlayGame = /*#__PURE__*/function (_Component) {
           var point = _ref2.point,
               rows = _ref2.rows,
               name = _ref2.name;
-          points += typeof point == 'number' ? point : 0;
+          points += typeof point == "number" ? point : 0;
 
           if (winCon && points >= winCon) {
             _this.setState({
               gameOver: true
             });
+
+            console.log("Kazandım!!");
           }
 
           socket.emit("changeRows", rows);
@@ -84987,7 +84989,7 @@ var PlayGame = /*#__PURE__*/function (_Component) {
     });
     socket = props.socket;
     socket.on("newPointTable", function (table) {
-      console.log('newPoints came');
+      console.log("newPoints came");
 
       _this.setState({
         table: table
@@ -85389,8 +85391,6 @@ var Board = /*#__PURE__*/function (_Component) {
                                     rows: rows
                                   });
 
-                                  _this.props.socket.emit("changeRows", rows);
-
                                   coefficientPoints.then(function (points) {
                                     resolve({
                                       point: points * newLetterSquares.length,
@@ -85470,6 +85470,11 @@ var Board = /*#__PURE__*/function (_Component) {
       gameStarted: false,
       name: props.name
     };
+    props.socket.on("sendWinCon", function (winCon) {
+      _this.setState({
+        winCon: winCon
+      });
+    });
     return _this;
   }
 
@@ -85572,7 +85577,7 @@ var Board = /*#__PURE__*/function (_Component) {
         }
       }, "Oyunu ba\u015Flat") : null, /*#__PURE__*/_react.default.createElement(_PlayGame.default, {
         ip: this.props.ip,
-        winCon: this.props.winCon,
+        winCon: this.state.winCon || this.props.winCon,
         turn: turn,
         socket: this.props.socket,
         name: this.props.name,
@@ -85854,7 +85859,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "44326" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "44790" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

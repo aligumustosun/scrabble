@@ -41,6 +41,9 @@ class Board extends Component {
       gameStarted: false,
       name: props.name,
     };
+    props.socket.on("sendWinCon", (winCon) => {
+      this.setState({ winCon });
+    });
   }
 
   shuffle(array) {
@@ -227,7 +230,6 @@ class Board extends Component {
               rows[square.x][square.y] = newSquare;
             });
             this.setState({ rows });
-            this.props.socket.emit("changeRows", rows);
 
             coefficientPoints.then((points) => {
               resolve({ point: points * newLetterSquares.length, rows, name });
@@ -298,7 +300,7 @@ class Board extends Component {
         ) : null}
         <PlayGame
           ip={this.props.ip}
-          winCon={this.props.winCon}
+          winCon={this.state.winCon || this.props.winCon}
           turn={turn}
           socket={this.props.socket}
           name={this.props.name}

@@ -36,6 +36,7 @@ socket.on("connection", (socket) => {
     console.log({ pointTable });
     socket.broadcast.emit("newPointTable", pointTable);
     socket.broadcast.emit("newRows", serverRows);
+    socket.broadcast.emit("sendWinCon", winCon);
     myClientList.push(name);
     clientCounter++;
   });
@@ -43,7 +44,7 @@ socket.on("connection", (socket) => {
   socket.on("changeRows", (rows) => {
     serverRows = rows;
     clientCounter++;
-    console.log(clientCounter + "change rows" );
+    console.log(clientCounter + "change rows");
     console.log(clientCounter % myClientList.length);
     socket.broadcast.emit("newRows", {
       rows,
@@ -59,8 +60,8 @@ socket.on("connection", (socket) => {
   socket.on("changePointTable", ({ name, points }) => {
     console.log({ name, points });
     console.log("change server");
-    if (points > winCon) {
-      socket.broadcast.emit("finishGame", name, points);
+    if (points >= winCon) {
+      socket.broadcast.emit("finishGame", { name, points });
     }
     pointTable[name] = points;
     socket.broadcast.emit("newPointTable", pointTable);
