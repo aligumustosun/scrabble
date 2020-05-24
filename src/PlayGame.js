@@ -32,7 +32,7 @@ class PlayGame extends Component {
 
   checkWord = () => {
     const { wordToCheck, vertical, table } = this.state;
-    const { ip } = this.props;
+    const { ip,winCon } = this.props;
     let points = this.state.totalPoints;
     const { checkWord } = this.props;
     axios
@@ -41,6 +41,9 @@ class PlayGame extends Component {
         console.log(included)
         checkWord(vertical, wordToCheck, included).then(({ point, rows, name }) => {
           points += (typeof point=='number') ? point : 0;
+          if(points >= winCon ){
+            socket.emit('gameOver',{name,points});
+          }
           socket.emit("changeRows", rows);
           socket.emit("changePointTable", {name,points});
           this.setState({ totalPoints: points });

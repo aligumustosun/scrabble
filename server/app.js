@@ -52,6 +52,11 @@ socket.on("connection", (socket) => {
     pointTable[name]=points;
     socket.broadcast.emit("newPointTable", pointTable);
   })
+
+  socket.on('gameOver', function({name, points}){
+    socket.broadcast.emit('finishGame',name,points);
+    console.log('Win Con met.')
+  })
 });
 
 socket.on("connect", function () {

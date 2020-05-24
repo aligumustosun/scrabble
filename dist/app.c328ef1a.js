@@ -84948,7 +84948,9 @@ var PlayGame = /*#__PURE__*/function (_Component) {
           wordToCheck = _this$state.wordToCheck,
           vertical = _this$state.vertical,
           table = _this$state.table;
-      var ip = _this.props.ip;
+      var _this$props = _this.props,
+          ip = _this$props.ip,
+          winCon = _this$props.winCon;
       var points = _this.state.totalPoints;
       var checkWord = _this.props.checkWord;
 
@@ -84960,6 +84962,14 @@ var PlayGame = /*#__PURE__*/function (_Component) {
               rows = _ref2.rows,
               name = _ref2.name;
           points += typeof point == 'number' ? point : 0;
+
+          if (points >= winCon) {
+            socket.emit('gameOver', {
+              name: name,
+              points: points
+            });
+          }
+
           socket.emit("changeRows", rows);
           socket.emit("changePointTable", {
             name: name,
@@ -85522,6 +85532,14 @@ var Board = /*#__PURE__*/function (_Component) {
           });
         }
       });
+      socket.on("finishGame", function (_ref7) {
+        var name = _ref7.name,
+            points = _ref7.points;
+        console.log({
+          name: name,
+          points: points
+        });
+      });
     }
   }, {
     key: "render",
@@ -85550,6 +85568,7 @@ var Board = /*#__PURE__*/function (_Component) {
         }
       }, "Oyunu ba\u015Flat") : null, /*#__PURE__*/_react.default.createElement(_PlayGame.default, {
         ip: this.props.ip,
+        winCon: this.props.winCon,
         turn: turn,
         socket: this.props.socket,
         name: this.props.name,
@@ -85672,6 +85691,7 @@ var App = /*#__PURE__*/function (_Component) {
         port: 3000,
         socket: socket,
         name: this.state.name,
+        winCon: document.getElementById("winCon".value),
         sizeX: parseInt(document.getElementById("oyunAlaniXinput").value),
         sizeY: parseInt(document.getElementById("oyunAlaniYinput").value),
         coefficientRatios: [parseInt(document.getElementById("ratioZero").value), parseInt(document.getElementById("ratioTwo").value), parseInt(document.getElementById("ratioThree").value)]
@@ -85739,6 +85759,7 @@ var App = /*#__PURE__*/function (_Component) {
         ip: ip,
         port: port,
         host: host,
+        winCon: document.getElementById("winCon").value,
         socket: socket,
         name: this.state.name
       }))) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Input, {
@@ -85822,7 +85843,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62909" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "42542" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

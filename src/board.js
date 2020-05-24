@@ -39,7 +39,7 @@ class Board extends Component {
       player: true,
       turn: props.host ? true : false,
       gameStarted: false,
-      name: props.name
+      name: props.name,
     };
   }
 
@@ -63,7 +63,7 @@ class Board extends Component {
         if (square.empty) {
           emptySquares.push(square);
         }
-      }),
+      })
     );
 
     this.shuffle(emptySquares)
@@ -115,15 +115,21 @@ class Board extends Component {
     });
     socket.on("newRows", ({ rows, clientCounter, myClientList }) => {
       console.log({ rows });
-      if(myClientList[(clientCounter+1)%myClientList.length] == this.props.name) {
-        this.setState({ turn : true})
+      if (
+        myClientList[(clientCounter + 1) % myClientList.length] ==
+        this.props.name
+      ) {
+        this.setState({ turn: true });
       }
-      if (myClientList[clientCounter]!=name) {
+      if (myClientList[clientCounter] != name) {
         this.setState({ rows });
       }
     });
-  }
 
+    socket.on("finishGame", ({name,points}) => {
+      console.log({name,points});
+    });
+  }
 
   generateProps = (square, i, rowLength) => {
     const { startPoint } = this.state;
@@ -165,11 +171,10 @@ class Board extends Component {
 
   checkWordAndGetPoint = async (vertical, word, included) => {
     const { name } = this.state;
-    this.setState({turn : false})
+    this.setState({ turn: false });
     return new Promise((resolve, rej) => {
       const { startPoint, rows, wordList } = this.state;
-      
-      
+
       const getSquares = async () => {
         return Promise.all(
           Array.from(word).map((char, i) => {
@@ -178,55 +183,53 @@ class Board extends Component {
                 startPoint.y + (vertical ? 0 : i)
               ];
             return square;
-          }),
+          })
         );
       };
 
-      
       if (!included) {
         resolve(0, rows, name);
-      }
-      else {
-      getSquares().then(async (squares) => {
-        const blackSquares = squares.filter(
-          (square) => square.coefficient == 0,
-        );
-        const newLetterSquares = squares.filter(
-          (square) => square.letter == "_",
-        );
-        const filledSquares = squares.filter((square) => !square.empty);
-        const unmatchedSquares = squares.filter(
-          (square, i) => square.letter != "_" && square.letter != word[i],
-        );
-        const coefficientPoints = newLetterSquares.reduce(
-          async (multipliedPoints, square) => {
-            const multipliedPointResult = await multipliedPoints;
-            return multipliedPointResult * square.coefficient;
-          },
-          1,
-        );
-        if (
-          newLetterSquares.length < 1 ||
-          unmatchedSquares.length + blackSquares.length > 0 ||
-          filledSquares.length < 1
-        ) {
-          resolve(0, rows, name);
-        } else {
-          squares.forEach((square, i) => {
-            const newSquare = square;
-            square.letter = word[i];
-            square.empty = false;
-            rows[square.x][square.y] = newSquare;
-          });
-            this.setState({ rows }); 
+      } else {
+        getSquares().then(async (squares) => {
+          const blackSquares = squares.filter(
+            (square) => square.coefficient == 0
+          );
+          const newLetterSquares = squares.filter(
+            (square) => square.letter == "_"
+          );
+          const filledSquares = squares.filter((square) => !square.empty);
+          const unmatchedSquares = squares.filter(
+            (square, i) => square.letter != "_" && square.letter != word[i]
+          );
+          const coefficientPoints = newLetterSquares.reduce(
+            async (multipliedPoints, square) => {
+              const multipliedPointResult = await multipliedPoints;
+              return multipliedPointResult * square.coefficient;
+            },
+            1
+          );
+          if (
+            newLetterSquares.length < 1 ||
+            unmatchedSquares.length + blackSquares.length > 0 ||
+            filledSquares.length < 1
+          ) {
+            resolve(0, rows, name);
+          } else {
+            squares.forEach((square, i) => {
+              const newSquare = square;
+              square.letter = word[i];
+              square.empty = false;
+              rows[square.x][square.y] = newSquare;
+            });
+            this.setState({ rows });
             this.props.socket.emit("changeRows", rows);
-          
-          coefficientPoints.then((points) => {
-            resolve({ point: points * newLetterSquares.length, rows, name });
-          });
-        }
-      });
-    }
+
+            coefficientPoints.then((points) => {
+              resolve({ point: points * newLetterSquares.length, rows, name });
+            });
+          }
+        });
+      }
     });
   };
 
@@ -249,10 +252,10 @@ class Board extends Component {
         onClick={() => {
           const { startPoint } = this.state;
           document.getElementById(
-            "x" + startPoint.x + "y" + startPoint.y,
+            "x" + startPoint.x + "y" + startPoint.y
           ).style.outlineStyle = "initial";
           document.getElementById(
-            "x" + square.x + "y" + square.y,
+            "x" + square.x + "y" + square.y
           ).style.outlineStyle = "inset";
           this.setState({ startPoint: { x: rowIndex, y: i } });
           console.log({ startPoint: { x: rowIndex, y: i } });
@@ -291,6 +294,7 @@ class Board extends Component {
         ) : null}
         <PlayGame
           ip={this.props.ip}
+          winCon={this.props.winCon}
           turn={turn}
           socket={this.props.socket}
           name={this.props.name}

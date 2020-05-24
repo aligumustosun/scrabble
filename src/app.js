@@ -30,9 +30,10 @@ class App extends Component {
     };
   }
 
+
   OyunuKur = () => {
     this.setState({ showBoard: false }, () =>
-      this.setState({ showBoard: true }),
+      this.setState({ showBoard: true })
     );
   };
 
@@ -47,7 +48,13 @@ class App extends Component {
 
   componentDidMount() {}
   render() {
-    const { rows, dropdownSelected, host, playerEntered, serverIp } = this.state;
+    const {
+      rows,
+      dropdownSelected,
+      host,
+      playerEntered,
+      serverIp,
+    } = this.state;
 
     return (
       <>
@@ -65,19 +72,20 @@ class App extends Component {
                           port={3000}
                           socket={socket}
                           name={this.state.name}
+                          winCon={document.getElementById("winCon".value)}
                           sizeX={parseInt(
-                            document.getElementById("oyunAlaniXinput").value,
+                            document.getElementById("oyunAlaniXinput").value
                           )}
                           sizeY={parseInt(
-                            document.getElementById("oyunAlaniYinput").value,
+                            document.getElementById("oyunAlaniYinput").value
                           )}
                           coefficientRatios={[
                             parseInt(
-                              document.getElementById("ratioZero").value,
+                              document.getElementById("ratioZero").value
                             ),
                             parseInt(document.getElementById("ratioTwo").value),
                             parseInt(
-                              document.getElementById("ratioThree").value,
+                              document.getElementById("ratioThree").value
                             ),
                           ]}
                         ></Board>
@@ -182,6 +190,7 @@ class App extends Component {
                   ip={ip}
                   port={port}
                   host={host}
+                  winCon={document.getElementById("winCon").value}
                   socket={socket}
                   name={this.state.name}
                 ></Board>
@@ -208,7 +217,7 @@ class App extends Component {
               onClick={() => {
                 if (this.state.host) {
                   socket = io(
-                    `http://${document.getElementById("ServerIp")}:${3000}`,
+                    `http://${document.getElementById("ServerIp")}:${3000}`
                   );
                   socket.emit("newPlayer", this.state.name);
                 }
@@ -217,11 +226,13 @@ class App extends Component {
             >
               Oyuna başla
             </Button>
-            {this.state.host ? <Input 
-            id={"ServerIp"} 
-            placeholder="Server IP Adresi"
-            onChange={(e,{value}) => this.setState({ serverIp: value})}
-            ></Input> : null}
+            {this.state.host ? (
+              <Input
+                id={"ServerIp"}
+                placeholder="Server IP Adresi"
+                onChange={(e, { value }) => this.setState({ serverIp: value })}
+              ></Input>
+            ) : null}
           </>
         )}
       </>
