@@ -84968,8 +84968,11 @@ var PlayGame = /*#__PURE__*/function (_Component) {
               gameOver: true
             });
 
-            alert("Tebrikler ".concat(points, " ile oyunu kazand\u0131n."));
-            console.log("Kazandım!!");
+            alert("Congrats. you won the game by ".concat(points, " points."));
+            socket.broadcast.emit("finishGame", {
+              name: name,
+              points: points
+            });
           }
 
           socket.emit("changeRows", rows);
@@ -85861,7 +85864,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50122" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50522" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
