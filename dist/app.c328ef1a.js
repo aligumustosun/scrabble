@@ -85646,6 +85646,8 @@ var App = /*#__PURE__*/function (_Component) {
           showBoard: true
         });
       });
+
+      socket.emit("setWinCon", document.getElementById("winCon").value);
     });
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "JoinGame", function () {
       var port = document.getElementById("portInput").value;
@@ -85769,7 +85771,6 @@ var App = /*#__PURE__*/function (_Component) {
         ip: ip,
         port: port,
         host: host,
-        winCon: document.getElementById("winCon").value,
         socket: socket,
         name: this.state.name
       }))) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Input, {
@@ -85853,7 +85854,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "44202" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63190" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

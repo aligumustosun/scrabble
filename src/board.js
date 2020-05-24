@@ -41,6 +41,7 @@ class Board extends Component {
       gameStarted: false,
       name: props.name,
     };
+
   }
 
   shuffle(array) {

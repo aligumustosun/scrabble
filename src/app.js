@@ -35,6 +35,7 @@ class App extends Component {
     this.setState({ showBoard: false }, () =>
       this.setState({ showBoard: true })
     );
+    socket.emit("setWinCon", document.getElementById("winCon").value)
   };
 
   JoinGame = () => {
@@ -186,7 +187,6 @@ class App extends Component {
                   ip={ip}
                   port={port}
                   host={host}
-                  winCon={document.getElementById("winCon").value}
                   socket={socket}
                   name={this.state.name}
                 ></Board>

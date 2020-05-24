@@ -41,8 +41,8 @@ class PlayGame extends Component {
         console.log(included)
         checkWord(vertical, wordToCheck, included).then(({ point, rows, name }) => {
           points += (typeof point=='number') ? point : 0;
-          if(points >= winCon ){
-            socket.emit('gameOver',{name,points});
+          if(winCon && points >= winCon ){
+            this.setState({ gameOver: true})
           }
           socket.emit("changeRows", rows);
           socket.emit("changePointTable", {name,points});
