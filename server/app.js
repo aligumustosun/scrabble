@@ -24,7 +24,7 @@ let clientCounter = 0;
 
 
 const pointTable = {};
-
+let serverRows;
 socket.on("connection", (socket) => {
   socket.on("disconnect", (socket) => {
     delete myClientList[socket.id];
@@ -35,9 +35,13 @@ socket.on("connection", (socket) => {
     pointTable[name]=0;
     console.log({pointTable})
     socket.broadcast.emit("newPointTable", pointTable);
+    socket.broadcast.emit("newRows", rows);
     myClientList.push(name);
+    clientCounter++
   });
+
   socket.on("changeRows", (rows) => {
+    serverRows = rows;
     socket.broadcast.emit("newRows", {
       rows,
       clientCounter: clientCounter % myClientList.length,

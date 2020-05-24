@@ -118,6 +118,9 @@ class Board extends Component {
       if(myClientList[(clientCounter+1)%myClientList.length] == this.props.name) {
         this.setState({ turn : true})
       }
+      else {
+        this.setState({ turn : false})
+      }
       if (myClientList[clientCounter]!=name) {
         this.setState({ rows });
       }

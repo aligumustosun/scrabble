@@ -47,7 +47,7 @@ class App extends Component {
 
   componentDidMount() {}
   render() {
-    const { rows, dropdownSelected, host, playerEntered, serverIp } = this.state;
+    const { rows, dropdownSelected, host, playerEntered, serverIp, ip, port } = this.state;
 
     return (
       <>
@@ -158,6 +158,7 @@ class App extends Component {
                   <Form.Field>
                     <Form.Input
                       id={"ipInput"}
+                      defaultValue={"25.68.159.146"}
                       label={"IP Adresi"}
                       placeholder="IP Adresi"
                       width={14}
@@ -166,13 +167,14 @@ class App extends Component {
                   <Form.Field>
                     <Form.Input
                       id={"portInput"}
+                      defaultValue={"3000"}
                       label={"Port"}
                       placeholder="Port"
                       width={14}
                     />
                   </Form.Field>
                   <Form.Field>
-                    <Button onClick={this.JoinGame}> Enter the game.</Button>
+                    <Button onClick={() => this.JoinGame()}> Enter the game.</Button>
                   </Form.Field>
                 </Form.Group>
               </Form>
@@ -208,7 +210,7 @@ class App extends Component {
               onClick={() => {
                 if (this.state.host) {
                   socket = io(
-                    `http://${document.getElementById("ServerIp")}:${3000}`,
+                    `http://${document.getElementById("ServerIp").value}:3000`,
                   );
                   socket.emit("newPlayer", this.state.name);
                 }
