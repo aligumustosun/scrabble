@@ -19,15 +19,15 @@ const socket = require("socket.io")(server, {
   },
 });
 
-const pointTable = {};
-
+let myClientList = [];
 let clientCounter = -1;
 
+const pointTable = {};
 let serverRows;
 let winCon;
 socket.on("connection", (socket) => {
   socket.on("disconnect", (socket) => {
-    delete Object.keys(pointTable)[socket.id];
+    delete myClientList[socket.id];
   });
 
   socket.on("newPlayer", (name) => {
@@ -36,8 +36,8 @@ socket.on("connection", (socket) => {
     console.log({ pointTable });
     socket.broadcast.emit("newPointTable", pointTable);
     socket.broadcast.emit("newRows", serverRows);
-    if(!Object.keys(pointTable).includes(name)) { 
-      Object.keys(pointTable).push(name);
+    if(!myClientList.includes(name)) { 
+      myClientList.push(name);
       clientCounter++;
     }
   });
@@ -46,12 +46,12 @@ socket.on("connection", (socket) => {
     serverRows = rows;
     clientCounter++;
     console.log(clientCounter + "change rows");
-    console.log(clientCounter % Object.keys(pointTable).length);
+    console.log(clientCounter % myClientList.length);
     socket.broadcast.emit("sendWinCon", winCon);
     socket.broadcast.emit("newRows", {
       rows,
-      clientCounter: clientCounter % Object.keys(pointTable).length,
-      myClientList: Object.keys(pointTable),
+      clientCounter: clientCounter % myClientList.length,
+      myClientList,
     });
   });
 
