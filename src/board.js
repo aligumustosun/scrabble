@@ -42,7 +42,6 @@ class Board extends Component {
       name: props.name,
     };
     props.socket.on("sendWinCon", (winCon) => {
-
       this.setState({ winCon });
     });
   }
@@ -135,7 +134,7 @@ class Board extends Component {
     });
 
     socket.on("finishGame", ({ name, points }) => {
-      alert(`${name} ${points} puan ile oyunu kazandı.`)
+      alert(`${name} Won the game with ${points} points.`);
       console.log({ name, points });
     });
   }
@@ -289,16 +288,6 @@ class Board extends Component {
               : null}
           </Table.Body>
         </Table>
-        {this.props.host && !gameStarted ? (
-          <Button
-            onClick={() => {
-              console.log(this.props.socket);
-              this.setState({ gameStarted: true });
-            }}
-          >
-            Oyunu başlat
-          </Button>
-        ) : null}
         <PlayGame
           ip={this.props.ip}
           winCon={this.state.winCon || this.props.winCon}

@@ -30,12 +30,11 @@ class App extends Component {
     };
   }
 
-
   OyunuKur = () => {
     this.setState({ showBoard: false }, () =>
       this.setState({ showBoard: true })
     );
-    socket.emit("setWinCon", document.getElementById("winCon").value)
+    socket.emit("setWinCon", document.getElementById("winCon").value);
   };
 
   JoinGame = () => {
@@ -49,7 +48,15 @@ class App extends Component {
 
   componentDidMount() {}
   render() {
-    const { rows, dropdownSelected, host, playerEntered, serverIp, ip, port } = this.state;
+    const {
+      rows,
+      dropdownSelected,
+      host,
+      playerEntered,
+      serverIp,
+      ip,
+      port,
+    } = this.state;
 
     return (
       <>
@@ -67,7 +74,9 @@ class App extends Component {
                           port={3000}
                           socket={socket}
                           name={this.state.name}
-                          winCon={parseInt(document.getElementById("winCon".value))}
+                          winCon={parseInt(
+                            document.getElementById("winCon".value)
+                          )}
                           sizeX={parseInt(
                             document.getElementById("oyunAlaniXinput").value
                           )}
@@ -94,7 +103,7 @@ class App extends Component {
                           <Form.Input
                             id="oyunAlaniXinput"
                             defaultValue={11}
-                            label={"Oyun Alanı X"}
+                            label={"Board Horizontal Size"}
                             placeholder="X"
                             width={14}
                           />
@@ -102,7 +111,7 @@ class App extends Component {
                         <Form.Field>
                           <Form.Input
                             id="oyunAlaniYinput"
-                            label={"Oyun Alanı Y"}
+                            label={"Board Vertical Size"}
                             defaultValue={11}
                             placeholder="Y"
                             width={14}
@@ -114,16 +123,16 @@ class App extends Component {
                           <Form.Input
                             id="ratioZero"
                             defaultValue={11}
-                            label={"Kullanılamaz Bölge Sayısı"}
-                            placeholder="Kullanılamaz Bölge"
+                            label={"Unusable Area"}
+                            placeholder="Unusable Area"
                             width={15}
                           />
                         </Form.Field>
                         <Form.Field>
                           <Form.Input
                             id="ratioTwo"
-                            label={"x2 Bölge Sayısı"}
-                            placeholder="x2 Bölge Sayısı"
+                            label={"x2 Area"}
+                            placeholder="x2 Area"
                             defaultValue={11}
                             width={14}
                           />
@@ -131,24 +140,24 @@ class App extends Component {
                         <Form.Field>
                           <Form.Input
                             id="ratioThree"
-                            label={"x3 Bölge Sayısı"}
+                            label={"x3 Area"}
                             defaultValue={11}
-                            placeholder="x3 Bölge Sayısı"
+                            placeholder="x3 Area"
                             width={14}
                           />
                         </Form.Field>
                         <Form.Field>
                           <Form.Input
                             id={"winCon"}
-                            label={"Kazanma Puanı"}
-                            placeholder="Kazanma Puanı"
+                            label={"Win Condition"}
+                            placeholder="Win Condition"
                             width={14}
                           />
                         </Form.Field>
                       </Form.Group>
                       <Form.Field>
                         <Button onClick={() => this.OyunuKur()}>
-                          Oyunu kur
+                          Set Board
                         </Button>
                       </Form.Field>
                     </Form>
@@ -177,7 +186,10 @@ class App extends Component {
                     />
                   </Form.Field>
                   <Form.Field>
-                    <Button onClick={() => this.JoinGame()}> Enter the game.</Button>
+                    <Button onClick={() => this.JoinGame()}>
+                      {" "}
+                      Enter the game.
+                    </Button>
                   </Form.Field>
                 </Form.Group>
               </Form>
@@ -213,14 +225,14 @@ class App extends Component {
               onClick={() => {
                 if (this.state.host) {
                   socket = io(
-                    `http://${document.getElementById("ServerIp").value}:3000`,
+                    `http://${document.getElementById("ServerIp").value}:3000`
                   );
                   socket.emit("newPlayer", this.state.name);
                 }
                 this.setState({ dropdownSelected: true });
               }}
             >
-              Oyuna başla
+              Start Game
             </Button>
             {this.state.host ? (
               <Input

@@ -85572,15 +85572,7 @@ var Board = /*#__PURE__*/function (_Component) {
         return /*#__PURE__*/_react.default.createElement(_semanticUiReact.Table.Row, {
           key: i
         }, _this3.generateRow(row, i));
-      }) : null)), this.props.host && !gameStarted ? /*#__PURE__*/_react.default.createElement(_semanticUiReact.Button, {
-        onClick: function onClick() {
-          console.log(_this3.props.socket);
-
-          _this3.setState({
-            gameStarted: true
-          });
-        }
-      }, "Oyunu ba\u015Flat") : null, /*#__PURE__*/_react.default.createElement(_PlayGame.default, {
+      }) : null)), /*#__PURE__*/_react.default.createElement(_PlayGame.default, {
         ip: this.props.ip,
         winCon: this.state.winCon || this.props.winCon,
         turn: turn,
@@ -85719,12 +85711,12 @@ var App = /*#__PURE__*/function (_Component) {
       }, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Field, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Input, {
         id: "oyunAlaniXinput",
         defaultValue: 11,
-        label: "Oyun Alanı X",
+        label: "Board Horizontal Size",
         placeholder: "X",
         width: 14
       })), /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Field, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Input, {
         id: "oyunAlaniYinput",
-        label: "Oyun Alanı Y",
+        label: "Board Vertical Size",
         defaultValue: 11,
         placeholder: "Y",
         width: 14
@@ -85734,31 +85726,31 @@ var App = /*#__PURE__*/function (_Component) {
       }, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Field, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Input, {
         id: "ratioZero",
         defaultValue: 11,
-        label: "Kullanılamaz Bölge Sayısı",
-        placeholder: "Kullan\u0131lamaz B\xF6lge",
+        label: "Unusable Area",
+        placeholder: "Unusable Area",
         width: 15
       })), /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Field, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Input, {
         id: "ratioTwo",
-        label: "x2 Bölge Sayısı",
-        placeholder: "x2 B\xF6lge Say\u0131s\u0131",
+        label: "x2 Area",
+        placeholder: "x2 Area",
         defaultValue: 11,
         width: 14
       })), /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Field, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Input, {
         id: "ratioThree",
-        label: "x3 Bölge Sayısı",
+        label: "x3 Area",
         defaultValue: 11,
-        placeholder: "x3 B\xF6lge Say\u0131s\u0131",
+        placeholder: "x3 Area",
         width: 14
       })), /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Field, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Input, {
         id: "winCon",
-        label: "Kazanma Puanı",
-        placeholder: "Kazanma Puan\u0131",
+        label: "Win Condition",
+        placeholder: "Win Condition",
         width: 14
       }))), /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Field, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Button, {
         onClick: function onClick() {
           return _this2.OyunuKur();
         }
-      }, "Oyunu kur")))))) : !playerEntered ? /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Group, {
+      }, "Set Board")))))) : !playerEntered ? /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Group, {
         unstackable: true,
         widths: 2
       }, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Field, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Input, {
@@ -85777,7 +85769,7 @@ var App = /*#__PURE__*/function (_Component) {
         onClick: function onClick() {
           return _this2.JoinGame();
         }
-      }, " Enter the game.")))) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Board.default, {
+      }, " ", "Enter the game.")))) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Board.default, {
         ip: ip,
         port: port,
         host: host,
@@ -85820,7 +85812,7 @@ var App = /*#__PURE__*/function (_Component) {
             dropdownSelected: true
           });
         }
-      }, "Oyuna ba\u015Fla"), this.state.host ? /*#__PURE__*/_react.default.createElement(_semanticUiReact.Input, {
+      }, "Start Game"), this.state.host ? /*#__PURE__*/_react.default.createElement(_semanticUiReact.Input, {
         id: "ServerIp",
         placeholder: "Server IP Adresi",
         onChange: function onChange(e, _ref3) {
@@ -85864,7 +85856,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51315" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "48079" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
